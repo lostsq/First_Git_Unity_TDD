@@ -31,7 +31,7 @@ public class Test_Button_Press : MonoBehaviour {
 
     void OnMouseEnter()
     {
-        Debug.Log("On_Mouse_Enter_Test_Button");
+        //Debug.Log("On_Mouse_Enter_Test_Button");
         
     }
 

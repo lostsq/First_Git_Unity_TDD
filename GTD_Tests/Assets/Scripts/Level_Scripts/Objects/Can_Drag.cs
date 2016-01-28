@@ -105,9 +105,17 @@ public class Can_Drag : MonoBehaviour
             //curPosition.z = SR.sortingOrder * -1;
 
             transform.position = curPosition;
-      
-            
-        
+
+
+        RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+        if (hit.collider != null)
+        {
+            //Debug.Log("Target Position: " + hit.collider.gameObject.transform.position);
+            Debug.Log("Target Over: " + hit.collider.gameObject.tag);
+        }
+
+
 
     }
 
@@ -123,7 +131,7 @@ public class Can_Drag : MonoBehaviour
 
             c_Lock_Coll = coll;
 
-            Debug.Log("Collision occured with spot");
+            //Debug.Log("Collision occured with spot");
 
             //would do a check here to see if something is in this spot but for now just locking it.
             //set the lock posistion.
@@ -144,6 +152,8 @@ public class Can_Drag : MonoBehaviour
         //Debug.Log("Mouse Exit");
         //b_On_Lock = false;
     }
+
+
 
 
 }
