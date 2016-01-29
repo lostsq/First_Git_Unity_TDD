@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Level_Scripts.Handlers;
 
 public class Mouse_Interaction_Script : MonoBehaviour {
 
+    //This is the tag database.
+    Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
 
     //This is if dragging is occuring.
     bool b_Is_Dragging = false;
@@ -10,7 +13,8 @@ public class Mouse_Interaction_Script : MonoBehaviour {
     Collider2D Collider_Working_With = null;
     //this is the sprite renderer of the collider we are working with.
     SpriteRenderer This_SR;
-
+    //This is the button handler.
+    Button_Handler Button_Handler = new Button_Handler();
 
     //used for dragging
     Vector3 V_Offset;
@@ -69,13 +73,13 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             string s_Tag = Highest_Collider.gameObject.tag;
 
             //Now we check if the tag contains what information.
-            if (s_Tag.Contains("Menu"))
+            if (s_Tag.Contains(G_Tags.Tag_Button))
             {
                 //is a menu type object so we will pass it to the menu click.
-                Menu_Click(Highest_Collider);
+                Button_Handler.Button_Called(Highest_Collider);
             }
 
-            if (s_Tag.Contains("Drag"))
+            if (s_Tag.Contains(G_Tags.Tag_Drag))
             {
                 //is a menu type object so we will pass it to the menu click.
                 Dragable_Object(Highest_Collider);
@@ -92,7 +96,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
         string s_Tag = Collider_Working_With.gameObject.tag;
 
-        if (s_Tag.Contains("Field"))
+        if (s_Tag.Contains(G_Tags.Tag_Field))
         {
 
             //this is all for testing, but is close to final for dragging.
@@ -127,8 +131,6 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
     }
 
-
-
     //this is the update for when the mouse is let go.
     void Mouse_Up_Fired()
     {
@@ -136,10 +138,11 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
         if (Collider_Working_With != null)
         {
+            
 
             string s_Tag = Collider_Working_With.gameObject.tag;
 
-            if (s_Tag.Contains("Field"))
+            if (s_Tag.Contains(G_Tags.Tag_Field))
             {
 
                 //this is all for testing, but is close to final for dragging.
@@ -170,17 +173,26 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
 
                     //now we check if the collider has the spot tag.
-                    if (Highest_Collider.tag.Contains("Spot"))
+                    if (Highest_Collider.tag.Contains(G_Tags.Tag_Spot))
                     {
+                        //we snap/move it to that spot.
                         Snap_To_Spot(Highest_Collider.gameObject, Collider_Working_With.gameObject);
                     }
                     else
                     {
+                        //here we set the posistion of the collider back to the old spot in case it doens't work through and it's in the bag.
+                        Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x,V_Offset.y);
+
+                        //we snap back to the old parent.
                         Snap_To_Spot(Old_Parent, Collider_Working_With.gameObject);
                     }
                 }
                 else
                 {
+                    //here we set the posistion of the collider back to the old spot in case it doens't work through and it's in the bag.
+                    Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x, V_Offset.y);
+                    
+                    //we snap back to the old parent.
                     Snap_To_Spot(Old_Parent, Collider_Working_With.gameObject);
                 }
             }
@@ -190,17 +202,9 @@ public class Mouse_Interaction_Script : MonoBehaviour {
     }
 
 
-    //This will perform the action that the click will do when it is clicked.
-    void Menu_Click(Collider2D Passed_Collider)
-    {
-        string s_Tag = Passed_Collider.gameObject.tag;
 
-        //First we see what menu we are working with.
-        if (s_Tag.Contains("Stats_Menu_Button"))
-        {
-            //we know this is the stats menu button so we need to enable/click it.
-        }
-    }
+
+  
 
     //This will start the dragging process if it can be dragged.
     void Dragable_Object(Collider2D Passed_Collider)
@@ -210,7 +214,8 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
         string s_Tag = Passed_Collider.gameObject.tag;
 
-        if (s_Tag.Contains("Field"))
+
+        if (s_Tag.Contains(G_Tags.Tag_Field))
         {
             //set the collider working with and set the dragging to true along with the sprite renderer.
             Collider_Working_With = Passed_Collider;
@@ -220,7 +225,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //Collider_Working_With.gameObject.transform.parent = null;
 
             V_Offset = Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y));
-            //V_Offset.z = transform.position.z;
+            //V_Offset.z = ;
 
             //Vector2 Center_On_Mouse = new Vector2(V_Offset.x, V_Offset.y);
 
@@ -268,11 +273,11 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
             //set the layering to be above everything
             This_SR.sortingOrder = 80;
+            //this updates any children.
+            Child_Drag_Layering();
 
         }
     }
-
-
 
     //This will find the highest layered (by sprite level) at the mouses location. It does not include what is being dragged.
     Collider2D Find_Highest_Collider_At_Mouse()
@@ -326,22 +331,46 @@ public class Mouse_Interaction_Script : MonoBehaviour {
     //This is called when we want to snap a draggable item or something to spot. it will set it as it's parent and scale it and move it and set the order.
     void Snap_To_Spot(GameObject Parent, GameObject Child)
     {
-        //here we move the object to where the parent is.
-        Child.transform.position = Parent.transform.position;
-
         //set the lock as the parent. This also changes the scale to 0 for some reason..
         Child.transform.parent = Parent.transform;
-        //now we change the scale so it matches where it is.
-        Child.transform.localScale = Parent.transform.localScale;
+
+        //check if it's being snapped/placed in a bag. if so we don't change the posistion just yet and the local scale is different.
+        if (Parent.tag.Contains(G_Tags.Tag_Bag))
+        {
+            //since it's in a bag we set the scale to .5f. Might make this global variable later.
+            Child.transform.localScale = new Vector3(.5f, .5f, .5f);//Parent.transform.localScale;
+        }
+        else
+        {
+            //here we move the object to where the parent is.
+            Child.transform.position = Parent.transform.position;
+            Child.transform.localScale = new Vector3(1, 1, 1);//Parent.transform.localScale;
+        }
+
+        
+        //now we change the scale so it matches where it is. since the parent is scaled and not the child we put the child back to 1.
 
         //then we switch layers around. need to make sure that the object that can be dragged around is always on top of the spot it is placed no matter what.
         SpriteRenderer SR_t = Parent.GetComponent<SpriteRenderer>();
 
         //change the layer no matter what to what the item it's above is plus 1.
         This_SR.sortingOrder = SR_t.sortingOrder + 1;
-
+        //this updates any children.
+        Child_Drag_Layering();
     }
 
+    //This will update the children so they are layered correctly with the parent.
+    void Child_Drag_Layering()
+    {
+        int i_C_Count = Collider_Working_With.gameObject.transform.childCount;
+
+        for (int i = 0; i < i_C_Count; i++)
+        {
+            SpriteRenderer SR_t = Collider_Working_With.gameObject.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>();
+            SR_t.sortingOrder = This_SR.sortingOrder + 1;
+        }
+
+    }
 
 
 }
