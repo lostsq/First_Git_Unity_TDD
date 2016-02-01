@@ -26,17 +26,20 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             //get the tag we will be working with.
             string s_tag = Passed_Button.gameObject.tag;
 
-            //now depending on the tag is what we will do.
-            switch (s_tag)
+            //now depending on the tag we will perform the various actions.
+            if (s_tag == G_Tags.Tag_Button_Menu_Stats)
             {
-                case "Btn_Menu_Stats":
-                    Menu_Stats_Clicked();
-                    break;
-
-                default:
-                    break;
+                Menu_Stats_Clicked();
             }
-
+            else if(s_tag == G_Tags.Tag_Button_Menu_Items)
+            {
+                Menu_Items_Clicked();
+            }
+            else
+            {
+                //this is if there is no action for a tag to let us know.
+                Debug.Log("There is no action for tag:" + s_tag);
+            }
         }
 
 
@@ -48,7 +51,30 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             Vector3 Off = new Vector3(500, 0);
             //This is the stats menu.
             GameObject Menu = GameObject.Find("Stats_Menu");
-            Debug.Log("Test_Menu_Stats_Clicked");
+            //Debug.Log("Test_Menu_Stats_Clicked");
+
+            if (b_Menu_Stats_On)
+            {
+                b_Menu_Stats_On = false;
+                Menu.transform.position = Off;
+            }
+            else
+            {
+                b_Menu_Stats_On = true;
+                Menu.transform.position = On;
+            }
+        }
+
+
+        //This will open/close the menu for items.
+        void Menu_Items_Clicked()
+        {
+            //this will make the vectors for moving the menu.
+            Vector3 On = new Vector3(0, 0);
+            Vector3 Off = new Vector3(500, 0);
+            //This is the stats menu.
+            GameObject Menu = GameObject.Find("Items_Menu");
+            //Debug.Log("Test_Menu_Stats_Clicked");
 
             if (b_Menu_Stats_On)
             {

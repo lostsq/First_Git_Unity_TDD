@@ -70,18 +70,19 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Level_Scripts\Battle\Battle_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Battle\Battle_Start.cs" />
+    <Compile Include="Assets\Scripts\Level_Scripts\Handlers\Button_Handler.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Empty_Field_Move_Field.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\LE\Field_Navigation.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Hot_Bar.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Invin_Button.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Scroll_Basic.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Start.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Stats_Controller.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Text_Rendering_Sprite.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\Objects\Test_Button_Press.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Objects\Tooltip.cs" />
+    <Compile Include="Assets\Scripts\Mouse_Interaction_Script.cs" />
+    <Compile Include="Assets\Scripts\Tag_Keeper.cs" />
     <Compile Include="Assets\Scripts\_All_Order_Layering.cs" />
+    <Compile Include="Assets\Test_Script.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>

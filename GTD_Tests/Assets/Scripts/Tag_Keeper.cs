@@ -16,7 +16,9 @@ namespace Assets.Scripts
             Tag_Field = "Field",
             Tag_Spot = "Spot",
             Tag_Bag = "Bag",
-            Tag_Button_Menu_Stats = "Btn_Menu_Stats";
+            Tag_Button_Menu_Stats = "Btn_Menu_Stats",
+            Tag_Button_Menu_Items = "Btn_Menu_Items",
+            Tag_Button_Menu_Enemies = "Btn_Menu_Enemies";
 
     }
 }
