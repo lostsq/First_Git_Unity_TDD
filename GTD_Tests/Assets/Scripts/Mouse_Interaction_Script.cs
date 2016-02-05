@@ -109,23 +109,29 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //have to do this otherwise the mouse over events will fire.
             //curPosition.z = SR.sortingOrder * -1;
 
-            Collider_Working_With.gameObject.transform.parent.transform.position = curPosition;
+            if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+            {
+                Collider_Working_With.gameObject.transform.parent.parent.transform.position = curPosition;
+            }
+            else
+            {
+                Collider_Working_With.gameObject.transform.parent.transform.position = curPosition;
+            }
+
         }
         else
         {
-
-
             //this is all for testing, but is close to final for dragging.
 
             Vector3 curScreenPoint = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
 
-        Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
-        curPosition -= V_Offset;
-        curPosition += CurP;
-        //have to do this otherwise the mouse over events will fire.
-        //curPosition.z = SR.sortingOrder * -1;
+            Vector3 curPosition = Camera.main.ScreenToWorldPoint(curScreenPoint);
+            curPosition -= V_Offset;
+            curPosition += CurP;
+            //have to do this otherwise the mouse over events will fire.
+            //curPosition.z = SR.sortingOrder * -1;
 
-        Collider_Working_With.gameObject.transform.position = curPosition;
+            Collider_Working_With.gameObject.transform.position = curPosition;
 
         }
 
@@ -154,8 +160,15 @@ public class Mouse_Interaction_Script : MonoBehaviour {
                 curPosition += CurP;
                 //have to do this otherwise the mouse over events will fire.
                 //curPosition.z = SR.sortingOrder * -1;
+                if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+                {
+                    Collider_Working_With.gameObject.transform.parent.parent.transform.position = curPosition;
+                }
+                else
+                {
+                    Collider_Working_With.gameObject.transform.parent.transform.position = curPosition;
 
-                Collider_Working_With.gameObject.transform.parent.transform.position = curPosition;
+                }
             }
             else
             {
@@ -232,8 +245,14 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //Collider_Working_With.gameObject.transform.localScale = new Vector2(.5f, .5f);
 
             //Collider_Working_With.gameObject.transform.position = Center_On_Mouse;
-
-            CurP = Collider_Working_With.gameObject.transform.parent.transform.position;
+            if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+            {
+                CurP = Collider_Working_With.gameObject.transform.parent.parent.transform.position;
+            }
+            else
+            {
+                CurP = Collider_Working_With.gameObject.transform.parent.transform.position;
+            }
 
 
 

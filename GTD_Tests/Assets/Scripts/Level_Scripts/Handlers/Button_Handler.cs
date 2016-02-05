@@ -35,6 +35,41 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             {
                 Menu_Items_Clicked();
             }
+            else if (s_tag == G_Tags.Tag_Button_Path_Up)
+            {
+                //here we call the field path move.
+                LE_Stats_Controller Cur = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+                //move  pass.
+                Cur.Move_Path('w');
+            }
+            else if (s_tag == G_Tags.Tag_Button_Path_Down)
+            {
+                //here we call the field path move.
+                LE_Stats_Controller Cur = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+                //move  pass.
+                Cur.Move_Path('s');
+            }
+            else if (s_tag == G_Tags.Tag_Button_Path_Left)
+            {
+                //here we call the field path move.
+                LE_Stats_Controller Cur = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+                //move  pass.
+                Cur.Move_Path('a');
+            }
+            else if (s_tag == G_Tags.Tag_Button_Path_Right)
+            {
+                //here we call the field path move.
+                LE_Stats_Controller Cur = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+                //move  pass.
+                Cur.Move_Path('d');
+            }
+            else if (s_tag == G_Tags.Tag_Button_Path_Remove)
+            {
+                //here we call the field path move.
+                LE_Stats_Controller Cur = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+                //move  pass.
+                Cur.Move_Path('r');
+            }
             else
             {
                 //this is if there is no action for a tag to let us know.

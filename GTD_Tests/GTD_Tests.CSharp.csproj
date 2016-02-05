@@ -13,13 +13,11 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile>
-    </CompilerResponseFile>
+    <CompilerResponseFile></CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.3.1f1</UnityVersion>
-    <RootNamespace>
-    </RootNamespace>
+    <RootNamespace></RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -68,16 +66,13 @@
     <Compile Include="Assets\Scripts\Level_Scripts\Battle\Battle_Start.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Handlers\Button_Handler.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Empty_Field_Move_Field.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\LE\Field_Navigation.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Hot_Bar.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Invin_Button.cs" />
+    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Path_Creator.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Scroll_Basic.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Start.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Stats_Controller.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Text_Rendering_Sprite.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\Objects\Can_Drag.cs" />
-    <Compile Include="Assets\Scripts\Level_Scripts\Objects\Test_Button_Press.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Objects\Tooltip.cs" />
     <Compile Include="Assets\Scripts\Mouse_Interaction_Script.cs" />
     <Compile Include="Assets\Scripts\Tag_Keeper.cs" />

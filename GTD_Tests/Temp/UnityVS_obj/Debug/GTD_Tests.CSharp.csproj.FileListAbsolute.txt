@@ -1,0 +1,13 @@
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\Assembly-CSharp.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\Assembly-CSharp.pdb
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEditor.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.Networking.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.UI.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.xml
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.UI.xml
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEngine.Networking.xml
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_bin\Debug\UnityEditor.xml
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_obj\Debug\GTD_Tests.CSharp.csprojResolveAssemblyReference.cache
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_obj\Debug\Assembly-CSharp.dll
+C:\Users\v-nihart\Desktop\Desktop\Misc\Git_Clones\First_Git_Unity_TDD\GTD_Tests\Temp\UnityVS_obj\Debug\Assembly-CSharp.pdb

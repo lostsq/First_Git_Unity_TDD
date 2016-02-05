@@ -18,7 +18,17 @@ namespace Assets.Scripts
             Tag_Bag = "Bag",
             Tag_Button_Menu_Stats = "Btn_Menu_Stats",
             Tag_Button_Menu_Items = "Btn_Menu_Items",
-            Tag_Button_Menu_Enemies = "Btn_Menu_Enemies";
+            Tag_Button_Menu_Enemies = "Btn_Menu_Enemies",
+            Tag_Path_Maker = "Name_Path_Maker",
+            Tag_Path_Placement = "Path",
+            Tag_Path_Placed_Down = "Drag_Spot_Field_Path",
+            Tag_Button_Path_Right = "Btn_Right_Path",
+            Tag_Button_Path_Left = "Btn_Left_Path",
+            Tag_Button_Path_Up = "Btn_Up_Path",
+            Tag_Button_Path_Down = "Btn_Down_Path",
+            Tag_Button_Path_Remove = "Btn_Remove_Path",
+            Tag_Path_Maker_Field_Move = "Drag_Spot_Field";
+
 
     }
 }
