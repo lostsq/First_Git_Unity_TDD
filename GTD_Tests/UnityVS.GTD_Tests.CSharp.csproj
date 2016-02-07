@@ -60,6 +60,12 @@
     <Reference Include="UnityEngine.Analytics">
       <HintPath>Library\UnityAssemblies\UnityEngine.Analytics.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEngine.Networking">
+      <HintPath>Library\UnityAssemblies\UnityEngine.Networking.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEngine.UI">
+      <HintPath>Library\UnityAssemblies\UnityEngine.UI.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor">
       <HintPath>Library\UnityAssemblies\UnityEditor.dll</HintPath>
     </Reference>
@@ -74,6 +80,7 @@
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Empty_Field_Move_Field.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Hot_Bar.cs" />
+    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Path_Creator.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Scroll_Basic.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Start.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Stats_Controller.cs" />

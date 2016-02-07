@@ -21,7 +21,7 @@ namespace Assets.Scripts
             Tag_Button_Menu_Enemies = "Btn_Menu_Enemies",
             Tag_Path_Maker = "Name_Path_Maker",
             Tag_Path_Placement = "Path",
-            Tag_Path_Placed_Down = "Drag_Spot_Field_Path",
+            Tag_Path_Placed_Down = "Drag_Field_Path",
             Tag_Button_Path_Right = "Btn_Right_Path",
             Tag_Button_Path_Left = "Btn_Left_Path",
             Tag_Button_Path_Up = "Btn_Up_Path",
