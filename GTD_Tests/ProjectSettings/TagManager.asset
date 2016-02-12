@@ -22,6 +22,10 @@ TagManager:
   - Btn_Up_Path
   - Btn_Down_Path
   - Drag_Field_Path
+  - Btn_Grid_Size
+  - Drag_Deco
+  - Drag_Field_Deco
+  - Btn_Remove_Deco
   layers:
   - Default
   - TransparentFX

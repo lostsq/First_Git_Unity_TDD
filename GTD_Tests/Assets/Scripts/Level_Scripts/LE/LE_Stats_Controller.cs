@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using Assets.Scripts.Level_Scripts.LE;
+using System.Collections.Generic;
 
 public class LE_Stats_Controller : MonoBehaviour {
 
@@ -11,10 +13,20 @@ public class LE_Stats_Controller : MonoBehaviour {
     int i_field_height = 10;
     //the path number.
     int i_Path_Number = 0;
+    //bool for menu being open
+    bool b_Size_Menu_Open = false;
+    string temp_String_01 = "";
+    string temp_String_02 = "";
 
     GameObject[,] All_Field_Spots;
     public GameObject Empty_Field_Spot;
     public GameObject The_Field_Test;
+
+    public Sprite Test_Sprite;
+
+    //the tower and enemy lists. these hold the towers that are loaded/saved.
+    public List<Tower_Template> Tower_List = new List<Tower_Template>();
+    public List<Enemy_Template> Enemy_List = new List<Enemy_Template>();
 
     //Starting Energy: how much energy does the player start with. might have 100 be the max.
     int i_starting_energy = 100;
@@ -31,6 +43,11 @@ public class LE_Stats_Controller : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        //test for enemy gui.
+        Enemy_List.Add(new Enemy_Template("Test1", 1, 2, 3, 4, 5, 6, 7, 8, "Test2", Test_Sprite));
+        Enemy_List.Add(new Enemy_Template("Test4", 11, 22, 33, 44, 55, 66, 77, 88, "Test5", Test_Sprite));
+
+
         //Debug.Log("Start field called");
 
         //This will be called once to create the field initially.
@@ -66,11 +83,319 @@ public class LE_Stats_Controller : MonoBehaviour {
         //Update_Path();
     }
 
+    void OnGUI()
+    {
+
+        //the resize menu is now open.
+        if (b_Size_Menu_Open)
+        {
+            //move the background to center.
+            GameObject.Find("Solid_Background").transform.position = new Vector2(0, 0);
+
+            // Make a background box// 100x100 pixles in the center of the screen.
+            GUI.Box(new Rect((Screen.width / 2) - 50, (Screen.height / 2) - 50, 100, 130), "Grid Size"); //(Screen.width / 2) + 50, (Screen.height / 2) + 50), "Loader Menu");
+
+            GUI.Label(new Rect((Screen.width / 2) - 45, (Screen.height / 2) - 30, 15, 20), "X:");
+            GUI.Label(new Rect((Screen.width / 2) - 45, (Screen.height / 2) - 0, 15, 20), "Y:");
+
+            temp_String_01 = GUI.TextField(new Rect((Screen.width / 2) - 30, (Screen.height / 2) - 30, 40, 20), temp_String_01, 2);
+            temp_String_02 = GUI.TextField(new Rect((Screen.width / 2) - 30, (Screen.height / 2) - 0, 40, 20), temp_String_02, 2);
+
+            //button to confirm.
+            if (GUI.Button(new Rect((Screen.width / 2) - 40, (Screen.height / 2) + 25, 80, 20), "Confirm"))
+            {
+                //set the size menu open to false so no more menus rendering.
+                b_Size_Menu_Open = false;
+                //move the background.
+                GameObject.Find("Solid_Background").transform.position = new Vector2(500, 500);
+
+                //check the sizes that are picked and make sure they are number.
+                //the bool is to see if we need to update the size of the field.
+                bool Size_Update = false;
+                if (int.TryParse(temp_String_01, out i_field_width))
+                {
+                    Size_Update = true;
+                }
+                if (int.TryParse(temp_String_02, out i_field_height))
+                {
+                    Size_Update = true;
+                }
+                //check if we need to update the size of the field.
+                if (Size_Update)
+                {
+                    //we will update the field size.
+                    Update_Field_Size();
+                }
+
+            }
+            //button to cancel.
+            if (GUI.Button(new Rect((Screen.width / 2) - 40, (Screen.height / 2) + 50, 80, 20), "Cancel"))
+            {
+                //set the size menu open to false so no more menus rendering.
+                b_Size_Menu_Open = false;
+                //move the background.
+                GameObject.Find("Solid_Background").transform.position = new Vector2(500, 500);
+            }
+        }
+    }
+
 
     //This will generate out the field based off of the size, and add/remove any spots. if the spot has something and it is removed then that is removed with it.
     private void Update_Field_Size()
     {
-        
+        //This is the highest path spot that is placed on the new field, 0 means the path maker is not on the field at all and can ignore.
+        int i_Highest_Path_Spot = 0;
+        int[] i_All_Spots = new int[2000];
+        GameObject Path_Maker_Temp = null;
+
+        //we make a new field that will eventually replace the old field.
+        GameObject[,] New_All_Field_Spots = new GameObject[i_field_width, i_field_height];
+
+        //Debug.Log("Newx: " + i_field_width);
+        //Debug.Log("Newy: " + i_field_height);
+
+        //Debug.Log("Oldx: " + All_Field_Spots.GetUpperBound(0));
+        //Debug.Log("Oldy: " + All_Field_Spots.GetUpperBound(1));
+
+        //go through each of the field spots and give it the game object and then update it.
+        for (int i = 0; i <= New_All_Field_Spots.GetUpperBound(0); i++)
+        {
+            for (int j = 0; j <= New_All_Field_Spots.GetUpperBound(1); j++)
+            {
+                //Create/initilze a spot for this spot.
+                GameObject New_Game_Field_Spot = Instantiate(Empty_Field_Spot);
+                New_Game_Field_Spot.transform.parent = The_Field_Test.transform;
+                //now we add the spot to the spot on the all field spots.
+                New_All_Field_Spots[i, j] = New_Game_Field_Spot;
+
+                //now we tell that spot to move it's gameobject to the correct location on said grid.
+                //we use 1.28 because the sprite is 256 pixles, but devided by half so 128. so 1.28 is how far apart they are.
+                Vector2 New_Vect = new Vector2(i * 1.28f, j * -1.28f);
+                New_Game_Field_Spot.transform.localPosition = New_Vect;
+
+            }
+        }
+
+        //see if the x or y is lower to know if we need to check for path moves.
+        if (New_All_Field_Spots.GetUpperBound(0) < All_Field_Spots.GetUpperBound(0) || New_All_Field_Spots.GetUpperBound(1) < All_Field_Spots.GetUpperBound(1))
+        {
+            //this will be what we will check through x/y wise.
+            int Check_x = All_Field_Spots.GetUpperBound(0);
+            int Check_y = All_Field_Spots.GetUpperBound(1);
+
+            //we get the lower of the two values.
+            if (New_All_Field_Spots.GetUpperBound(0) < All_Field_Spots.GetUpperBound(0))
+            {
+                Check_x = New_All_Field_Spots.GetUpperBound(0);
+            }
+            if (New_All_Field_Spots.GetUpperBound(1) < All_Field_Spots.GetUpperBound(1))
+            {
+                Check_y = New_All_Field_Spots.GetUpperBound(1);
+            }
+
+
+
+            //going to go through all the places with the check x/y and see if there is a path, then if so we will move the maker to the highest spot.
+            //Then we need to make sure everything is moved and if it can't be moved it's removed.
+            //Only the path maker and start will not be removed, they are at worse moved to the invintory.
+
+            //get the path maker if it exsists
+            for (int i = 0; i <= All_Field_Spots.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= All_Field_Spots.GetUpperBound(1); j++)
+                {
+                    //go through each of the children for that spot and move them to the new spot.
+                    for (int q = 0; q < All_Field_Spots[i, j].gameObject.transform.childCount; q++)
+                    {
+                        if (All_Field_Spots[i, j].gameObject.transform.GetChild(q).name == G_Tags.Name_Path_Maker)
+                        {
+                            //this is the path maker.
+                            Path_Maker_Temp = (All_Field_Spots[i, j].gameObject.transform.GetChild(q).gameObject);
+                        }
+                        if (All_Field_Spots[i, j].gameObject.transform.GetChild(q).name == G_Tags.Name_Start_Point)
+                        {
+                            //make sure it's within the x/y.
+                            if (i > Check_x || j > Check_y)
+                            {
+                                //it's outside the new field so we move it back to invintory.
+                                Move_To_Invintory(All_Field_Spots[i, j].gameObject.transform.GetChild(q).gameObject);
+                            }
+
+                        }
+                    }
+                }
+            }
+
+                    //go through and move everything but path while counting how high path goes.
+                    //go through each of the field spots and give it the game object and then update it.
+                    for (int i = 0; i <= Check_x; i++)
+            {
+                for (int j = 0; j <= Check_y; j++)
+                {
+                    //Debug.Log("Running_Check");
+
+                    //go through each of the children for that spot and move them to the new spot.
+                    for (int q = 0; q < All_Field_Spots[i, j].gameObject.transform.childCount; q++)
+                    {
+                        //Debug.Log("Child_FOund");
+                        //check if the object is part of the path. ONLY FOR PATH SEGEMENTS.
+                        if (All_Field_Spots[i, j].gameObject.transform.GetChild(q).tag.Contains(G_Tags.Tag_Path_Placement))
+                        {
+                            //need to check the path number.
+                            int i_Temp_Path_Number = int.Parse((All_Field_Spots[i, j].gameObject.transform.GetChild(q).name.Split('_')[1]));
+                            //Debug.Log("Number_Path_Found = " + i_Temp_Path_Number);
+                            //add it to all spots to find the highest path.
+                            i_All_Spots[i_Highest_Path_Spot] = i_Temp_Path_Number;
+                            //add temp path, this is just used for counting here, will reset after done.
+                            i_Highest_Path_Spot++;
+
+                        }
+
+
+                        //we move it to the parent's location.
+                        All_Field_Spots[i, j].gameObject.transform.GetChild(q).transform.position = New_All_Field_Spots[i, j].gameObject.transform.position;
+                        //we set the new parent.
+                        All_Field_Spots[i, j].gameObject.transform.GetChild(q).transform.parent = New_All_Field_Spots[i, j].gameObject.transform;
+
+                        //now everything is over on the new all field.
+                    }
+                }
+            }
+
+
+            //check if there is a path maker.
+            if (Path_Maker_Temp != null)
+            {
+                //reset the path number
+                i_Highest_Path_Spot = 0;
+
+                
+
+
+                
+                i_Highest_Path_Spot = 0;
+                //need to find the highest path that does not break the chain.
+                for (int i = 0; i < i_All_Spots.GetLength(0); i++)
+                {
+                    //check if the next link is found.
+                    if (i_All_Spots[i] == i_Highest_Path_Spot + 1)
+                    {
+                        //increase the highest path spot by 1.
+                        i_Highest_Path_Spot++;
+                        //reset i back to 0 to keep checking. if it gets through then max has been found.
+                        i = 0;
+                    }
+                }
+
+                //we need to set the path number to the correct spot for adding/removing future paths!
+                i_Path_Number = i_Highest_Path_Spot;
+
+                //Debug.Log("Highest_Spot = " + i_Highest_Path_Spot);
+
+
+                //now check if there is a highest path
+                if (i_Highest_Path_Spot > 0)
+                {
+
+                    //now we need to remove all the numbers greater than the highest path and move the path maker to that spot.
+                    for (int i = 0; i <= New_All_Field_Spots.GetUpperBound(0); i++)
+                    {
+                        for (int j = 0; j <= New_All_Field_Spots.GetUpperBound(1); j++)
+                        {
+                            //go through each of the children for that spot and move them to the new spot.
+                            for (int q = 0; q < New_All_Field_Spots[i, j].gameObject.transform.childCount; q++)
+                            {
+                                //check if the object is part of the path. ONLY FOR PATH SEGEMENTS.
+                                if (New_All_Field_Spots[i, j].gameObject.transform.GetChild(q).tag.Contains( G_Tags.Tag_Path_Placement))
+                                {
+                                    //need to check the path number.
+                                    int i_Temp_Path_Number = int.Parse((New_All_Field_Spots[i, j].gameObject.transform.GetChild(q).name.Split('_')[1]));
+
+                                    //now check if the spot is higher than the highest path.
+                                    if (i_Temp_Path_Number > i_Highest_Path_Spot)
+                                    {
+                                        //we remove this spot since it was cut off.
+                                        //we destory the gameobject.
+                                        GameObject.Destroy(New_All_Field_Spots[i, j].gameObject.transform.GetChild(q).gameObject);
+                                    }
+
+                                    //check if it is the highest.
+                                    if (i_Temp_Path_Number == i_Highest_Path_Spot)
+                                    {
+                                        //we need to move the path maker here and remove this path spot then update the path maker.
+
+                                        //get the character.
+                                        char char_Temp = New_All_Field_Spots[i, j].gameObject.transform.GetChild(q).name.Split('_')[0][0];
+                                        Path_Maker_Temp.GetComponent<LE_Path_Creator>().Reset_Children(char_Temp);
+
+                                        //remove old.
+                                        GameObject.Destroy(New_All_Field_Spots[i, j].gameObject.transform.GetChild(q).gameObject);
+                                        //now move the path maker there.
+                                        Path_Maker_Temp.transform.position = New_All_Field_Spots[i, j].gameObject.transform.position;
+                                        Path_Maker_Temp.transform.parent = New_All_Field_Spots[i, j].gameObject.transform;
+                                        //will do the update for remove at the end.
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                //we move the path maker back to the invintory.
+                else
+                {
+                    Move_To_Invintory(Path_Maker_Temp);
+                }
+
+            }
+
+        }
+        //both values are larger or equal so we can just do a simple move without worry.
+        else
+        {
+            //go through each of the field spots and give it the game object and then update it.
+            for (int i = 0; i <= All_Field_Spots.GetUpperBound(0); i++)
+            {
+                for (int j = 0; j <= All_Field_Spots.GetUpperBound(1); j++)
+                {
+                    //go through each of the children for that spot and move them to the new spot.
+                    for (int q = 0; q < All_Field_Spots[i, j].gameObject.transform.childCount; q++)
+                    {
+                        //we move it to the parent's location.
+                        All_Field_Spots[i, j].gameObject.transform.GetChild(q).transform.position = New_All_Field_Spots[i, j].gameObject.transform.position;
+                        //we set the new parent.
+                        All_Field_Spots[i, j].gameObject.transform.GetChild(q).transform.parent = New_All_Field_Spots[i, j].gameObject.transform;
+                    }
+                }
+            }
+        }
+
+        //now we go through all of the old spots and remove/delete them and then do the switch.
+        //go through each of the field spots and give it the game object and then update it.
+        for (int i = 0; i <= All_Field_Spots.GetUpperBound(0); i++)
+        {
+            for (int j = 0; j <= All_Field_Spots.GetUpperBound(1); j++)
+            {
+                //go through each of the children for that spot and move them to the new spot.
+                for (int q = 0; q < All_Field_Spots[i, j].gameObject.transform.childCount; q++)
+                {
+                    //destory any children. might be decorations/left over path, ect, ect.
+                    GameObject.Destroy(All_Field_Spots[i, j].gameObject.transform.GetChild(q).gameObject);
+                }
+                    //we destory the gameobject.
+                    GameObject.Destroy(All_Field_Spots[i, j].gameObject);
+            }
+        }
+        //now we do the switch.
+        All_Field_Spots = New_All_Field_Spots;
+
+
+    }
+
+    //This will start the change size update.
+    public void Start_Size_Change()
+    {
+        //the menu is open. might not be needed.
+        b_Size_Menu_Open = true;
     }
 
 
@@ -89,7 +414,7 @@ public class LE_Stats_Controller : MonoBehaviour {
                 {
                     //get/check each child game object and check if it's our path creator.
                     GameObject T_Child = All_Field_Spots[x, y].gameObject.transform.GetChild(t).gameObject;
-                    if (T_Child.name == G_Tags.Tag_Path_Maker)
+                    if (T_Child.name == G_Tags.Name_Path_Maker)
                     {
                         //path maker found.
                         Path_Maker = T_Child;
@@ -221,7 +546,7 @@ public class LE_Stats_Controller : MonoBehaviour {
                 {
                     //get/check each child game object and check if it's our path creator.
                     GameObject T_Child = All_Field_Spots[x, y].gameObject.transform.GetChild(t).gameObject;
-                    if (T_Child.name == G_Tags.Tag_Path_Maker)
+                    if (T_Child.name == G_Tags.Name_Path_Maker)
                     {
                         //path maker found.
                         Path_Maker = T_Child;
@@ -345,6 +670,21 @@ public class LE_Stats_Controller : MonoBehaviour {
 
 
         return Return_This;
+    }
+
+    //this will move the gameobject back to the invintory. just centering it.
+    private void Move_To_Invintory(GameObject Move_This)
+    {
+        //first find the invintory.
+        GameObject Temp_Invintory = GameObject.Find(G_Tags.Name_Items_Invintory);
+        SpriteRenderer Temp_Invin_Rend = Temp_Invintory.GetComponent<SpriteRenderer>();
+
+        //now we move the object to it's location/centered.
+        Move_This.transform.position = Temp_Invintory.transform.position;
+        //now we change the parent and set the layering order.
+        Move_This.transform.parent = Temp_Invintory.transform;
+        Move_This.GetComponent<SpriteRenderer>().sortingOrder = Temp_Invin_Rend.sortingOrder + 1;
+
     }
 
 }

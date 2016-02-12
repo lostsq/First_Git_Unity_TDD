@@ -19,7 +19,9 @@ namespace Assets.Scripts
             Tag_Button_Menu_Stats = "Btn_Menu_Stats",
             Tag_Button_Menu_Items = "Btn_Menu_Items",
             Tag_Button_Menu_Enemies = "Btn_Menu_Enemies",
-            Tag_Path_Maker = "Name_Path_Maker",
+            Name_Path_Maker = "Name_Path_Maker",
+            Name_Items_Invintory = "Invintory_back",
+            Name_Start_Point = "Start_Point",
             Tag_Path_Placement = "Path",
             Tag_Path_Placed_Down = "Drag_Field_Path",
             Tag_Button_Path_Right = "Btn_Right_Path",
@@ -27,6 +29,10 @@ namespace Assets.Scripts
             Tag_Button_Path_Up = "Btn_Up_Path",
             Tag_Button_Path_Down = "Btn_Down_Path",
             Tag_Button_Path_Remove = "Btn_Remove_Path",
+            Tag_Button_Grid_Size = "Btn_Grid_Size",
+            Button_Remove_Decoration = "Btn_Remove_Deco",
+            Tag_Decoration = "Deco",
+            Tag_Field_Decoration = "Drag_Field_Deco",
             Tag_Path_Maker_Field_Move = "Drag_Spot_Field";
 
 

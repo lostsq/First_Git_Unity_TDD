@@ -62,10 +62,13 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Enemies_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Battle\Battle_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Battle\Battle_Start.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\Handlers\Button_Handler.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\Empty_Field_Move_Field.cs" />
+    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Classes\Enemy_Template.cs" />
+    <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Classes\Tower_Template.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_GUI.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Hot_Bar.cs" />
     <Compile Include="Assets\Scripts\Level_Scripts\LE\LE_Path_Creator.cs" />

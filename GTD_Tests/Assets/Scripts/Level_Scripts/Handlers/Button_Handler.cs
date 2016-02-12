@@ -18,6 +18,7 @@ namespace Assets.Scripts.Level_Scripts.Handlers
 
         //Various variables used by the different menus/buttons.
         bool b_Menu_Stats_On = false;
+        bool b_Menu_Enemies_On = false;
 
 
         //This will be called when a button is pressed and the collider of the button is passed so interactions can start.
@@ -34,6 +35,20 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             else if(s_tag == G_Tags.Tag_Button_Menu_Items)
             {
                 Menu_Items_Clicked();
+            }
+            else if (s_tag == G_Tags.Tag_Button_Menu_Enemies)
+            {
+                Menu_Enemy_Clicked();
+            }
+            else if (s_tag == G_Tags.Button_Remove_Decoration)
+            {
+                //we are killing the parent to this button which is a decoration.
+                GameObject.Destroy(Passed_Button.transform.parent.gameObject);
+            }
+            else if (s_tag == G_Tags.Tag_Button_Grid_Size)
+            {
+                //Find the stats controller and call the grid size change.
+                GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>().Start_Size_Change();
             }
             else if (s_tag == G_Tags.Tag_Button_Path_Up)
             {
@@ -123,6 +138,30 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             }
         }
 
+        //This will open/close the menu for stats.
+        void Menu_Enemy_Clicked()
+        {
+            //this will make the vectors for moving the menu.
+            Vector3 On = new Vector3(0, 0);
+            Vector3 Off = new Vector3(500, 0);
+            //This is the stats menu.
+            GameObject Menu = GameObject.Find("Enemies_Menu");
+            
+            //Debug.Log("Test_Menu_Stats_Clicked");
+
+            if (b_Menu_Enemies_On)
+            {
+                b_Menu_Enemies_On = false;
+                Menu.GetComponent<Enemies_GUI>().b_Enabled = false;
+                Menu.transform.position = Off;
+            }
+            else
+            {
+                b_Menu_Enemies_On = true;
+                Menu.GetComponent<Enemies_GUI>().b_StartingGUI = true;
+                Menu.transform.position = On;
+            }
+        }
 
     }
 }

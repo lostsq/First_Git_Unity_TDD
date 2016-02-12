@@ -2,7 +2,8 @@
 using System.Collections;
 using Assets.Scripts.Level_Scripts.Handlers;
 
-public class Mouse_Interaction_Script : MonoBehaviour {
+public class Mouse_Interaction_Script : MonoBehaviour
+{
 
     //This is the tag database.
     Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
@@ -21,21 +22,31 @@ public class Mouse_Interaction_Script : MonoBehaviour {
     Vector3 CurP;
     GameObject Old_Parent = null;
 
+    //the on gui/mouse over bools.
+    bool Running_GUI = false;
+
     // Use this for initialization
     void Start()
     {
 
-        
+
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
 
         //First we check to see if the mouse is being dragged.
         if (b_Is_Dragging)
         {
+            Running_GUI = false;
             //the dragging event is fired.
             Mouse_Dragging_Fired();
+        }
+        else
+        {
+            //fire a mouse over event.
+            Running_GUI = true;
         }
 
         //Check and see if the left mouse click has been pressed down.
@@ -49,13 +60,43 @@ public class Mouse_Interaction_Script : MonoBehaviour {
         if (Input.GetMouseButtonUp(0))
         {
             Mouse_Up_Fired();
-            
+
 
         }
 
+
+
     }
 
+    void OnGUI()
+    {
 
+        if (Running_GUI)
+        {
+
+            //here we will show tooltips,ect for various things it is over. Need this to be optimized since it's occuring every update.
+            Collider2D Working_With = Find_Highest_Collider_At_Mouse();
+
+            if (Working_With != null)
+            {
+
+                if (Working_With.tag == G_Tags.Tag_Field_Decoration)
+                {
+                    //juse some example code.
+
+
+                    //Debug.Log("Showing OnGUI");
+                    Vector2 Temp_Point = Camera.main.WorldToScreenPoint(Working_With.transform.position);//Event.current.mousePosition.x;
+                    GUI.Label(new Rect(Event.current.mousePosition.x, Event.current.mousePosition.y, 50, 20), "Decoration");
+                    //if (GUI.Button(new Rect(Temp_Point.x - 20, Temp_Point.y, 30, 20), "X"))
+                    //{
+                        //GameObject.Destroy(Working_With.gameObject);
+                    //}
+                }
+            }
+        }
+
+    }
 
     //This is called when the mouse down is fired.
     void Mouse_Down_Fired()
@@ -64,7 +105,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
         //we get the highest collider at the mouses location.
         Collider2D Highest_Collider = Find_Highest_Collider_At_Mouse();
-        
+
         //Verify that there is a highest collider to work with.
         if (Highest_Collider != null)
         {
@@ -109,7 +150,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //have to do this otherwise the mouse over events will fire.
             //curPosition.z = SR.sortingOrder * -1;
 
-            if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+            if (s_Tag.Contains(G_Tags.Tag_Path_Placement) || s_Tag.Contains(G_Tags.Tag_Decoration))
             {
                 Collider_Working_With.gameObject.transform.parent.parent.transform.position = curPosition;
             }
@@ -144,7 +185,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
 
         if (Collider_Working_With != null)
         {
-            
+
 
             string s_Tag = Collider_Working_With.gameObject.tag;
 
@@ -160,7 +201,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
                 curPosition += CurP;
                 //have to do this otherwise the mouse over events will fire.
                 //curPosition.z = SR.sortingOrder * -1;
-                if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+                if (s_Tag.Contains(G_Tags.Tag_Path_Placement) || s_Tag.Contains(G_Tags.Tag_Decoration))
                 {
                     Collider_Working_With.gameObject.transform.parent.parent.transform.position = curPosition;
                 }
@@ -188,13 +229,37 @@ public class Mouse_Interaction_Script : MonoBehaviour {
                     //now we check if the collider has the spot tag.
                     if (Highest_Collider.tag.Contains(G_Tags.Tag_Spot))
                     {
-                        //we snap/move it to that spot.
-                        Snap_To_Spot(Highest_Collider.gameObject, Collider_Working_With.gameObject);
+                        //check if the object is deco and if the spot its going to is field.
+                        if (Highest_Collider.tag.Contains(G_Tags.Tag_Field) && Collider_Working_With.tag.Contains(G_Tags.Tag_Decoration))
+                        {
+                            //here we set the posistion of the collider back to the old spot in case it doens't work through and it's in the bag.
+                            Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x, V_Offset.y);
+                            //we snap the old deco back to the old spot.
+                            Snap_To_Spot(Old_Parent, Collider_Working_With.gameObject);
+
+                            //a decoration is being attempted to placed on the field. here we will perform a copy of it.
+                            GameObject New_Deco = GameObject.Instantiate(Collider_Working_With.gameObject);
+                            //now we will tag it since it can only be removed with something else.
+                            New_Deco.tag = G_Tags.Tag_Field_Decoration;
+                            //now we snap it to the new spot.
+                            Snap_To_Spot(Highest_Collider.gameObject, New_Deco);
+                            New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = true;
+                            New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider2D>().enabled = true;
+
+                        }
+                        else
+                        {
+                            //we snap/move it to that spot.
+                            Snap_To_Spot(Highest_Collider.gameObject, Collider_Working_With.gameObject);
+                        }
+
+
+
                     }
                     else
                     {
                         //here we set the posistion of the collider back to the old spot in case it doens't work through and it's in the bag.
-                        Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x,V_Offset.y);
+                        Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x, V_Offset.y);
 
                         //we snap back to the old parent.
                         Snap_To_Spot(Old_Parent, Collider_Working_With.gameObject);
@@ -204,7 +269,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
                 {
                     //here we set the posistion of the collider back to the old spot in case it doens't work through and it's in the bag.
                     Collider_Working_With.gameObject.transform.position = new Vector2(V_Offset.x, V_Offset.y);
-                    
+
                     //we snap back to the old parent.
                     Snap_To_Spot(Old_Parent, Collider_Working_With.gameObject);
                 }
@@ -215,9 +280,6 @@ public class Mouse_Interaction_Script : MonoBehaviour {
     }
 
 
-
-
-  
 
     //This will start the dragging process if it can be dragged.
     void Dragable_Object(Collider2D Passed_Collider)
@@ -245,7 +307,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //Collider_Working_With.gameObject.transform.localScale = new Vector2(.5f, .5f);
 
             //Collider_Working_With.gameObject.transform.position = Center_On_Mouse;
-            if (s_Tag.Contains(G_Tags.Tag_Path_Placement))
+            if (s_Tag.Contains(G_Tags.Tag_Path_Placement) || s_Tag.Contains(G_Tags.Tag_Decoration))
             {
                 CurP = Collider_Working_With.gameObject.transform.parent.parent.transform.position;
             }
@@ -293,7 +355,7 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             //set the layering to be above everything
             This_SR.sortingOrder = 80;
             //this updates any children.
-            Child_Drag_Layering();
+            Child_Drag_Layering(Collider_Working_With.gameObject);
 
         }
     }
@@ -366,30 +428,31 @@ public class Mouse_Interaction_Script : MonoBehaviour {
             Child.transform.localScale = new Vector3(1, 1, 1);//Parent.transform.localScale;
         }
 
-        
+
         //now we change the scale so it matches where it is. since the parent is scaled and not the child we put the child back to 1.
 
         //then we switch layers around. need to make sure that the object that can be dragged around is always on top of the spot it is placed no matter what.
         SpriteRenderer SR_t = Parent.GetComponent<SpriteRenderer>();
-
+        SpriteRenderer SR_child = Child.GetComponent<SpriteRenderer>();
         //change the layer no matter what to what the item it's above is plus 1.
-        This_SR.sortingOrder = SR_t.sortingOrder + 1;
+        SR_child.sortingOrder = SR_t.sortingOrder + 1;
         //this updates any children.
-        Child_Drag_Layering();
+        Child_Drag_Layering(Child);
     }
 
     //This will update the children so they are layered correctly with the parent.
-    void Child_Drag_Layering()
+    void Child_Drag_Layering(GameObject Passed_Object)
     {
-        int i_C_Count = Collider_Working_With.gameObject.transform.childCount;
+        int i_C_Count = Passed_Object.transform.childCount;
 
         for (int i = 0; i < i_C_Count; i++)
         {
             SpriteRenderer SR_t = Collider_Working_With.gameObject.transform.GetChild(i).gameObject.GetComponent<SpriteRenderer>();
-            SR_t.sortingOrder = This_SR.sortingOrder + 1;
+            SpriteRenderer SR_child = Passed_Object.GetComponent<SpriteRenderer>();
+            SR_t.sortingOrder = SR_child.sortingOrder + 1;
         }
 
     }
-
-
 }
+
+
