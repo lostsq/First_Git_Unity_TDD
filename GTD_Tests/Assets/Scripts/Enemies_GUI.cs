@@ -83,8 +83,14 @@ public class Enemies_GUI : MonoBehaviour {
             
 
 
+            //we will now create the Close button.
+            if (GUI.Button(new Rect(20, 10, 80, 20), "Close"))
+            {
+                //this is where we will start the enemy add script,ect.
+            }
+
             //we will now create the add button.
-            if (GUI.Button(new Rect(i_To_Center_X_Start, f_scroll, 80, 20), "Add Enemy"))
+            if (GUI.Button(new Rect(20, 40, 80, 20), "Add Enemy"))
             {
                 //this is where we will start the enemy add script,ect.
             }
@@ -93,6 +99,8 @@ public class Enemies_GUI : MonoBehaviour {
             for (int i = 0; i < Stats.Enemy_List.Count; i++)
             {
                 x_start = 0;
+
+                GUI.Box(new Rect(i_To_Center_X_Start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Size_Edit, i_Size_Height_Amount),Stats.Enemy_List[i].Enemy_Sprite.texture);
 
                 //Stats.Enemy_List[i]
                 //first we need to make the edit button.

@@ -24,7 +24,7 @@ namespace Assets.Scripts.Level_Scripts.LE
         public string Enemy_Mod;
 
         //this is the sprite that is used for the enemy, will be used to show a picture.
-        Sprite Enemy_Sprite;
+        public Sprite Enemy_Sprite;
 
         //when an enemy is created all the items are passed to it so you must know what everything is.
         public Enemy_Template(string Passed_Name, int Passed_Reward_Single, int Passed_Reward_Wave, int Passed_Amount, int Passed_Wave_Number, int Passed_Start_After, int Passed_HP, int Passed_Speed, int Passed_Power, string Passed_Mod, Sprite Passed_Sprite)

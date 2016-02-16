@@ -608,6 +608,11 @@ public class LE_Stats_Controller : MonoBehaviour {
             //now we check if there is anything in that location.
             for (int t = 0; t < All_Field_Spots[i_Move_Spot_X, i_Move_Spot_Y].gameObject.transform.childCount; t++)
             {
+                //if there is a child. that means something is there so we do not make a path.
+                b_Can_Make_Path = false;
+                //the rest below was a test to see about having a tag for where you can't place a path. it does work, but not as easy.
+
+
                 //get/check each child game object and check if it's our path creator.
                 GameObject T_Child = All_Field_Spots[i_Move_Spot_X, i_Move_Spot_Y].gameObject.transform.GetChild(t).gameObject;
                 //check the name.
