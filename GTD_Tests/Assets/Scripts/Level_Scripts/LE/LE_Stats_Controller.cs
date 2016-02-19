@@ -13,10 +13,6 @@ public class LE_Stats_Controller : MonoBehaviour {
     int i_field_height = 10;
     //the path number.
     int i_Path_Number = 0;
-    //bool for menu being open
-    bool b_Size_Menu_Open = false;
-    string temp_String_01 = "";
-    string temp_String_02 = "";
 
     GameObject[,] All_Field_Spots;
     public GameObject Empty_Field_Spot;
@@ -86,63 +82,15 @@ public class LE_Stats_Controller : MonoBehaviour {
     void OnGUI()
     {
 
-        //the resize menu is now open.
-        if (b_Size_Menu_Open)
-        {
-            //move the background to center.
-            GameObject.Find("Solid_Background").transform.position = new Vector2(0, 0);
-
-            // Make a background box// 100x100 pixles in the center of the screen.
-            GUI.Box(new Rect((Screen.width / 2) - 50, (Screen.height / 2) - 50, 100, 130), "Grid Size"); //(Screen.width / 2) + 50, (Screen.height / 2) + 50), "Loader Menu");
-
-            GUI.Label(new Rect((Screen.width / 2) - 45, (Screen.height / 2) - 30, 15, 20), "X:");
-            GUI.Label(new Rect((Screen.width / 2) - 45, (Screen.height / 2) - 0, 15, 20), "Y:");
-
-            temp_String_01 = GUI.TextField(new Rect((Screen.width / 2) - 30, (Screen.height / 2) - 30, 40, 20), temp_String_01, 2);
-            temp_String_02 = GUI.TextField(new Rect((Screen.width / 2) - 30, (Screen.height / 2) - 0, 40, 20), temp_String_02, 2);
-
-            //button to confirm.
-            if (GUI.Button(new Rect((Screen.width / 2) - 40, (Screen.height / 2) + 25, 80, 20), "Confirm"))
-            {
-                //set the size menu open to false so no more menus rendering.
-                b_Size_Menu_Open = false;
-                //move the background.
-                GameObject.Find("Solid_Background").transform.position = new Vector2(500, 500);
-
-                //check the sizes that are picked and make sure they are number.
-                //the bool is to see if we need to update the size of the field.
-                bool Size_Update = false;
-                if (int.TryParse(temp_String_01, out i_field_width))
-                {
-                    Size_Update = true;
-                }
-                if (int.TryParse(temp_String_02, out i_field_height))
-                {
-                    Size_Update = true;
-                }
-                //check if we need to update the size of the field.
-                if (Size_Update)
-                {
-                    //we will update the field size.
-                    Update_Field_Size();
-                }
-
-            }
-            //button to cancel.
-            if (GUI.Button(new Rect((Screen.width / 2) - 40, (Screen.height / 2) + 50, 80, 20), "Cancel"))
-            {
-                //set the size menu open to false so no more menus rendering.
-                b_Size_Menu_Open = false;
-                //move the background.
-                GameObject.Find("Solid_Background").transform.position = new Vector2(500, 500);
-            }
-        }
+        
     }
 
 
     //This will generate out the field based off of the size, and add/remove any spots. if the spot has something and it is removed then that is removed with it.
-    private void Update_Field_Size()
+    public void Update_Field_Size(int new_x, int new_y)
     {
+        i_field_width = new_x;
+        i_field_height = new_y;
         //This is the highest path spot that is placed on the new field, 0 means the path maker is not on the field at all and can ignore.
         int i_Highest_Path_Spot = 0;
         int[] i_All_Spots = new int[2000];
@@ -389,13 +337,6 @@ public class LE_Stats_Controller : MonoBehaviour {
         All_Field_Spots = New_All_Field_Spots;
 
 
-    }
-
-    //This will start the change size update.
-    public void Start_Size_Change()
-    {
-        //the menu is open. might not be needed.
-        b_Size_Menu_Open = true;
     }
 
 

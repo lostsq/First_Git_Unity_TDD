@@ -18,7 +18,7 @@ namespace Assets.Scripts.Level_Scripts.LE
         int Tower_Power;
         int Tower_Range;
 
-        //this is the sprite that is used for the tower, will be used to show a picture.
+        //this is the sprite that is used for the tower, will be used to show a picture. however if multiple are selected (for fusing) it will show something else.
         Sprite Tower_Sprite;
 
         //when a tower is created it will need all of the information.

@@ -15,7 +15,7 @@ public class Mouse_Interaction_Script : MonoBehaviour
     //this is the sprite renderer of the collider we are working with.
     SpriteRenderer This_SR;
     //This is the button handler.
-    Button_Handler Button_Handler = new Button_Handler();
+    public Button_Handler Button_Handler;
 
     //used for dragging
     Vector3 V_Offset;
@@ -28,7 +28,7 @@ public class Mouse_Interaction_Script : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-
+        Button_Handler = new Button_Handler();
 
     }
 

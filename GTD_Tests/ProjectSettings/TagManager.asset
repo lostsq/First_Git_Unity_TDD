@@ -26,6 +26,8 @@ TagManager:
   - Drag_Deco
   - Drag_Field_Deco
   - Btn_Remove_Deco
+  - Btn_Enemy_Sprite
+  - Btn_Ally_Sprite
   layers:
   - Default
   - TransparentFX

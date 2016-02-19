@@ -10,7 +10,7 @@ namespace Assets.Scripts.Level_Scripts.Handlers
     /// <summary>
     /// This class will handle all the button interactions for single click/do objects.
     /// </summary>
-    class Button_Handler : MonoBehaviour
+    public class Button_Handler : MonoBehaviour
     {
         //The tags used in the game.
         Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
@@ -48,7 +48,7 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             else if (s_tag == G_Tags.Tag_Button_Grid_Size)
             {
                 //Find the stats controller and call the grid size change.
-                GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>().Start_Size_Change();
+                //GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>().Start_Size_Change();
             }
             else if (s_tag == G_Tags.Tag_Button_Path_Up)
             {
@@ -85,6 +85,15 @@ namespace Assets.Scripts.Level_Scripts.Handlers
                 //move  pass.
                 Cur.Move_Path('r');
             }
+            else if (s_tag == G_Tags.Button_Enemy_Sprite)
+            {
+                //get the enemies GUI.
+                Enemies_GUI Cur = GameObject.Find(G_Tags.Name_Enemies_Menu).GetComponent<Enemies_GUI>();
+                //set the temp sprite.
+                Cur.Edit_GameObject_Temp = Passed_Button.gameObject;
+                //close the menu.
+                Cur.b_Close_Enemy_Sprites = true;
+            }
             else
             {
                 //this is if there is no action for a tag to let us know.
@@ -107,11 +116,13 @@ namespace Assets.Scripts.Level_Scripts.Handlers
             {
                 b_Menu_Stats_On = false;
                 Menu.transform.position = Off;
+                Menu.GetComponent<Stats_Menu_GUI>().b_Stats_Menu_Enabled = false;
             }
             else
             {
                 b_Menu_Stats_On = true;
                 Menu.transform.position = On;
+                Menu.GetComponent<Stats_Menu_GUI>().b_Stats_Menu_Enabled = true;
             }
         }
 
@@ -139,7 +150,7 @@ namespace Assets.Scripts.Level_Scripts.Handlers
         }
 
         //This will open/close the menu for stats.
-        void Menu_Enemy_Clicked()
+        public void Menu_Enemy_Clicked()
         {
             //this will make the vectors for moving the menu.
             Vector3 On = new Vector3(0, 0);
