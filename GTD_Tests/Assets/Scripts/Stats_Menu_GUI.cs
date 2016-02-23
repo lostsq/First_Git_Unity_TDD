@@ -10,8 +10,31 @@ public class Stats_Menu_GUI : MonoBehaviour
     string temp_String_02 = "";
     //The tags used in the game.
     Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
+    //this is the up/down for scrolling.
+    float f_scroll = 0;
     //allie stuff
     bool b_Ally_Menu = false;
+    bool b_Add_Ally = false;
+
+    //This is the x value to keep everything centered.
+    int i_To_Center_X_Start = 200;
+    //how tall the buttons and such will be in pixles.
+    int i_Size_Height_Amount = 50;
+    //sizes
+    int i_Sprite_Edit_Size = 50;
+    int i_Name_Size = 120;
+    int i_Level_Size = 80;
+    int i_Power_Size = 80;
+    int i_Speed_Size = 80;
+    int i_Range_Size = 80;
+    int i_Free_Points_Size = 80;
+    int i_Delete_Size = 50;
+
+    //the tower to edit if any.
+    Assets.Scripts.Level_Scripts.LE.Tower_Template Temp_Tower = null;
+    //where the tower is.. is -1 is nothing.
+    int i_Tower_Location_Number = -1;
+
     //This is the stats controller which holds all of the enemies/towers.
     LE_Stats_Controller Stats = null;
 
@@ -96,12 +119,157 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Ally_Menu = false;
         }
 
+        //Add a new ally Button.
+        if (GUI.Button(new Rect(20, 50, 120, 20), "Add Ally"))
+        {
+            b_Add_Ally = true;
+            b_Ally_Menu = false;
+        }
 
+        //we will go through and show all the allies the player has.
+        //now we will go through each of the enemies and list them out and display all their info along with an edit and remove button.
+        for (int i = 0; i < Stats.Tower_List.Count; i++)
+        {
+            //the x offset.
+            int x_start = 0;
+
+            //the sprite box.
+            GUI.Box(new Rect(i_To_Center_X_Start, f_scroll + i_Sprite_Edit_Size + (i * (i_Sprite_Edit_Size + 5)), i_Sprite_Edit_Size, i_Size_Height_Amount), Stats.Tower_List[i].Tower_Sprite.texture);
+
+            //the edit box over the sprite box.
+            if (GUI.Button(new Rect(i_To_Center_X_Start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Sprite_Edit_Size, i_Size_Height_Amount), "Edit"))
+            {
+                //set what tower we are editing.
+                i_Tower_Location_Number = i;
+                //we set the temp enemy to this one to edit.
+                Temp_Tower = Stats.Tower_List[i];
+                //reset scroll.
+                f_scroll = 0;
+
+                //still need to open said menu here.
+                b_Add_Ally = true;
+                b_Ally_Menu = false;
+            }
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Sprite_Edit_Size;
+
+            //Name
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Name_Size, i_Size_Height_Amount / 2), "Name");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Name_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Name);
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Name_Size;
+
+            //Level
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Level_Size, i_Size_Height_Amount / 2), "Level");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Level_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Level.ToString());
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Level_Size;
+
+            //Power
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Power_Size, i_Size_Height_Amount / 2), "Power");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Power_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Power.ToString());
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Power_Size;
+
+            //Speed
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Speed_Size, i_Size_Height_Amount / 2), "Speed");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Speed_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Speed.ToString());
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Speed_Size;
+
+            //Range
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Range_Size, i_Size_Height_Amount / 2), "Range");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Range_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Range.ToString());
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Range_Size;
+
+            //Points
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Free_Points_Size, i_Size_Height_Amount / 2), "Points");
+            GUI.Box(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i_Size_Height_Amount / 2) + (i * (i_Size_Height_Amount + 5)), i_Free_Points_Size, i_Size_Height_Amount / 2), Stats.Tower_List[i].Tower_Points.ToString());
+
+            //This is to update the x spot with the new spot value.
+            x_start += i_Free_Points_Size;
+
+            //now we add the delete button.
+            if (GUI.Button(new Rect(i_To_Center_X_Start + x_start, f_scroll + i_Size_Height_Amount + (i * (i_Size_Height_Amount + 5)), i_Delete_Size, i_Size_Height_Amount), "Delete"))
+            {
+                //this is the remove tower button. pretty simple.
+                Stats.Tower_List.RemoveAt(i);
+            }
+        }
+    }
+
+    //this will show the add ally menu where the user adds/edits allies.
+    void Add_Ally()
+    {
+        //Close Button.
+        if (GUI.Button(new Rect(20, 20, 120, 20), "Close"))
+        {
+            b_Ally_Menu = true;
+            b_Add_Ally = false;
+        }
+
+
+        //no tower, so we make one.
+        if (Temp_Tower == null)
+        {
+            //Debug.Log("Made new temp enemy");
+            Temp_Tower = new Assets.Scripts.Level_Scripts.LE.Tower_Template("Temp", 0, 0, 0, 0, 0, new Sprite());
+            Temp_Tower.Tower_Sprite = Sprite.Create(new Texture2D(1, 1), new Rect(0, 0, 0, 0), new Vector2(1, 1));
+        }
+
+        //the y offset.
+        float y_offset = 100 + f_scroll;
+
+        //NAME
+        //name label
+        //[sprite] [<-Fuze] [sprite]
+
+
+        //Name
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Name");
+        y_offset += i_Size_Height_Amount/2;
+        //Name
+        GUI.Box(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Tower.Tower_Name);
+        //First Sprite Box
+
+
+
+        //LEVEL
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Level");
+        y_offset += i_Size_Height_Amount / 2;
+        string Temp_Value = Temp_Tower.Tower_Level.ToString();
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Value, 4);
+        int.TryParse(Temp_Value, out Temp_Tower.Tower_Level);
+
+        y_offset += i_Size_Height_Amount;
+
+        //POWER
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "HP");
+        y_offset += i_Size_Height_Amount / 2;
+        Temp_Value = Temp_Tower.Tower_Power.ToString();
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Power_Size / 2), y_offset, i_Power_Size, i_Size_Height_Amount / 2), Temp_Value, 5);
+        int.TryParse(Temp_Value, out Temp_Tower.Tower_Power);
+
+        y_offset += i_Size_Height_Amount;
 
 
 
 
     }
+
+    //this is the select ally menu that the user sees all the allies they can pick from.
+    void Show_Select_Ally()
+    {
+
+    }
+
 
     void Stats_Menu_Enabled()
     {
@@ -153,7 +321,7 @@ public class Stats_Menu_GUI : MonoBehaviour
 
     void OnGUI()
     {
-        //the resize menu is now open.
+        //Find what menu is open and show it.
         if (b_Size_Menu_Open)
         {
             Size_Change_Menu();
@@ -165,6 +333,10 @@ public class Stats_Menu_GUI : MonoBehaviour
         if (b_Ally_Menu)
         {
             Ally_Menu();
+        }
+        if (b_Add_Ally)
+        {
+            Add_Ally();
         }
     }
 }

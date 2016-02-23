@@ -42,6 +42,9 @@ public class LE_Stats_Controller : MonoBehaviour {
         //test for enemy gui.
         Enemy_List.Add(new Enemy_Template("Test1", 1, 2, 3, 4, 5, 6, 7, 8, "Test2", Test_Sprite));
         Enemy_List.Add(new Enemy_Template("Test4", 11, 22, 33, 44, 55, 66, 77, 88, "Test5", Test_Sprite));
+        //test for allies/towers.
+        Tower_List.Add(new Tower_Template("Tower1", 1, 2, 3, 4, 5, Test_Sprite));
+        Tower_List.Add(new Tower_Template("Tower2", 12, 22, 32, 42, 52, Test_Sprite));
 
 
         //Debug.Log("Start field called");

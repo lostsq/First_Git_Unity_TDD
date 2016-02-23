@@ -12,17 +12,18 @@ namespace Assets.Scripts.Level_Scripts.LE
     public class Tower_Template
     {
         //these are all the variables that the tower has.
-        string Tower_Name;
-        int Tower_Level;
-        int Tower_Speed;
-        int Tower_Power;
-        int Tower_Range;
+        public string Tower_Name;
+        public int Tower_Level;
+        public int Tower_Speed;
+        public int Tower_Power;
+        public int Tower_Range;
+        public int Tower_Points;
 
         //this is the sprite that is used for the tower, will be used to show a picture. however if multiple are selected (for fusing) it will show something else.
-        Sprite Tower_Sprite;
+        public Sprite Tower_Sprite;
 
         //when a tower is created it will need all of the information.
-        public Tower_Template(string Passed_Name,int Passed_Level, int Passed_Speed, int Passed_Power, int Passed_Range, Sprite Passed_Sprite)
+        public Tower_Template(string Passed_Name,int Passed_Level, int Passed_Speed, int Passed_Power, int Passed_Range, int Passed_Points, Sprite Passed_Sprite)
         {
             //we just set all the variables and that's about it.
             Tower_Name = Passed_Name;
@@ -30,6 +31,7 @@ namespace Assets.Scripts.Level_Scripts.LE
             Tower_Power = Passed_Power;
             Tower_Range = Passed_Range;
             Tower_Speed = Passed_Speed;
+            Tower_Points = Passed_Points;
             Tower_Sprite = Passed_Sprite;
         }
 
