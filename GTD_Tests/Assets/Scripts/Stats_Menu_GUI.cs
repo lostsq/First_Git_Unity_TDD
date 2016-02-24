@@ -13,8 +13,11 @@ public class Stats_Menu_GUI : MonoBehaviour
     //this is the up/down for scrolling.
     float f_scroll = 0;
     //allie stuff
+    GameObject Ally_Sprite_Table;
     bool b_Ally_Menu = false;
     bool b_Add_Ally = false;
+    bool b_Ally_Pick_Screen = false;
+    bool b_First_Sprite = false;
 
     //This is the x value to keep everything centered.
     int i_To_Center_X_Start = 200;
@@ -32,6 +35,12 @@ public class Stats_Menu_GUI : MonoBehaviour
 
     //the tower to edit if any.
     Assets.Scripts.Level_Scripts.LE.Tower_Template Temp_Tower = null;
+    //the second sprite if any to add to the fuse area.
+    public Sprite Temp_Sprite = null;
+    public string Temp_Name = "";
+    public bool b_Finished_Picking = false;
+    Sprite Second_Sprite = null;
+    string Second_Name = "";
     //where the tower is.. is -1 is nothing.
     int i_Tower_Location_Number = -1;
 
@@ -43,12 +52,15 @@ public class Stats_Menu_GUI : MonoBehaviour
     {
         //get the stats thing we are working with to get the enemies.
         Stats = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
+        Ally_Sprite_Table = GameObject.Find("LE_Allies_Background");
+        
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        f_scroll += Input.GetAxis("Mouse ScrollWheel") * 80;
+        Ally_Sprite_Table.transform.Translate((Vector3.up * Input.GetAxis("Mouse ScrollWheel") * 2));
     }
 
     void Size_Change_Menu()
@@ -142,7 +154,7 @@ public class Stats_Menu_GUI : MonoBehaviour
                 //set what tower we are editing.
                 i_Tower_Location_Number = i;
                 //we set the temp enemy to this one to edit.
-                Temp_Tower = Stats.Tower_List[i];
+                Temp_Tower = (Assets.Scripts.Level_Scripts.LE.Tower_Template)Stats.Tower_List[i].Clone();
                 //reset scroll.
                 f_scroll = 0;
 
@@ -213,6 +225,32 @@ public class Stats_Menu_GUI : MonoBehaviour
         {
             b_Ally_Menu = true;
             b_Add_Ally = false;
+            Temp_Tower = null;
+            i_Tower_Location_Number = -1;
+        }
+
+        //Save Button.
+        if (GUI.Button(new Rect(20, 50, 120, 20), "Save"))
+        {
+            //save the temp tower.
+            if (i_Tower_Location_Number != -1)
+            {
+                //set the tower in that place.
+                Stats.Tower_List[i_Tower_Location_Number] = Temp_Tower;
+            }
+            else
+            {
+                //we add the new tower if has a name. no name means no tower has been selected.
+                if (Temp_Tower.Tower_Name != "")
+                {
+                    Stats.Tower_List.Add(Temp_Tower);
+                }
+            }
+
+            b_Ally_Menu = true;
+            b_Add_Ally = false;
+            Temp_Tower = null;
+            i_Tower_Location_Number = -1;
         }
 
 
@@ -220,16 +258,22 @@ public class Stats_Menu_GUI : MonoBehaviour
         if (Temp_Tower == null)
         {
             //Debug.Log("Made new temp enemy");
-            Temp_Tower = new Assets.Scripts.Level_Scripts.LE.Tower_Template("Temp", 0, 0, 0, 0, 0, new Sprite());
+            Temp_Tower = new Assets.Scripts.Level_Scripts.LE.Tower_Template("Temp", 1, 1, 1, 1, 1, new Sprite());
             Temp_Tower.Tower_Sprite = Sprite.Create(new Texture2D(1, 1), new Rect(0, 0, 0, 0), new Vector2(1, 1));
+        }
+        //no temp sprite so make a placeholder one.
+        if (Second_Sprite == null)
+        {
+            Second_Sprite = Sprite.Create(new Texture2D(1, 1), new Rect(0, 0, 0, 0), new Vector2(1, 1));
         }
 
         //the y offset.
-        float y_offset = 100 + f_scroll;
+        float y_offset = 20 + f_scroll;
 
         //NAME
         //name label
-        //[sprite] [<-Fuze] [sprite]
+        //[sprite] [<-Fuze] [sprite] we use the tower sprite, and then the temp sprite.
+        
 
 
         //Name
@@ -237,36 +281,123 @@ public class Stats_Menu_GUI : MonoBehaviour
         y_offset += i_Size_Height_Amount/2;
         //Name
         GUI.Box(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Tower.Tower_Name);
+        y_offset += i_Size_Height_Amount / 2;
         //First Sprite Box
-
-
+        if (GUI.Button(new Rect(Screen.width / 2 - ((i_Sprite_Edit_Size) / 2) - (i_Sprite_Edit_Size * 1.5f), y_offset, i_Sprite_Edit_Size, i_Size_Height_Amount), Temp_Tower.Tower_Sprite.texture))
+        {
+            //open the sprite menu for the first sprite.
+            b_Ally_Pick_Screen = true;
+            b_First_Sprite = true;
+            b_Add_Ally = false;
+            Ally_Sprite_Table.transform.position = new Vector3(0, 0);
+        }
+        //button for fuze
+        if (GUI.Button(new Rect(Screen.width / 2 - ((i_Sprite_Edit_Size) / 2) - (i_Sprite_Edit_Size * .5f), y_offset, i_Sprite_Edit_Size * 2, i_Size_Height_Amount), "<<Fuse!"))
+        {
+            //we will perform a fuse as long as it can be.. this logic will be manually entered with each combination.
+        }
+        //Second sprite box.
+        if (GUI.Button(new Rect(Screen.width / 2 - ((i_Sprite_Edit_Size) / 2) + (i_Sprite_Edit_Size *1.5f) , y_offset, i_Sprite_Edit_Size, i_Size_Height_Amount), Second_Sprite.texture))
+        {
+            //open the sprite menu for the second sprite.
+            b_Ally_Pick_Screen = true;
+            b_First_Sprite = false;
+            b_Add_Ally = false;
+            Ally_Sprite_Table.transform.position = new Vector3(0, 0);
+        }
+        y_offset += i_Size_Height_Amount*1.5f;
 
         //LEVEL
         GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Level");
         y_offset += i_Size_Height_Amount / 2;
         string Temp_Value = Temp_Tower.Tower_Level.ToString();
-        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Value, 4);
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Value, 3);
         int.TryParse(Temp_Value, out Temp_Tower.Tower_Level);
 
         y_offset += i_Size_Height_Amount;
 
         //POWER
-        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "HP");
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Power");
         y_offset += i_Size_Height_Amount / 2;
         Temp_Value = Temp_Tower.Tower_Power.ToString();
-        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Power_Size / 2), y_offset, i_Power_Size, i_Size_Height_Amount / 2), Temp_Value, 5);
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Power_Size / 2), y_offset, i_Power_Size, i_Size_Height_Amount / 2), Temp_Value, 3);
         int.TryParse(Temp_Value, out Temp_Tower.Tower_Power);
 
         y_offset += i_Size_Height_Amount;
 
+        //SPEED
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Speed");
+        y_offset += i_Size_Height_Amount / 2;
+        Temp_Value = Temp_Tower.Tower_Speed.ToString();
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Speed_Size / 2), y_offset, i_Speed_Size, i_Size_Height_Amount / 2), Temp_Value, 3);
+        int.TryParse(Temp_Value, out Temp_Tower.Tower_Speed);
 
+        y_offset += i_Size_Height_Amount;
 
+        //RANGE
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Range");
+        y_offset += i_Size_Height_Amount / 2;
+        Temp_Value = Temp_Tower.Tower_Range.ToString();
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Range_Size / 2), y_offset, i_Range_Size, i_Size_Height_Amount / 2), Temp_Value, 3);
+        int.TryParse(Temp_Value, out Temp_Tower.Tower_Range);
+
+        y_offset += i_Size_Height_Amount;
+        
+        //POINTS
+        GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "HP");
+        y_offset += i_Size_Height_Amount / 2;
+        Temp_Value = Temp_Tower.Tower_Points.ToString();
+        Temp_Value = GUI.TextField(new Rect(Screen.width / 2 - (i_Free_Points_Size / 2), y_offset, i_Free_Points_Size, i_Size_Height_Amount / 2), Temp_Value, 3);
+        int.TryParse(Temp_Value, out Temp_Tower.Tower_Points);
+
+        y_offset += i_Size_Height_Amount;
 
     }
 
     //this is the select ally menu that the user sees all the allies they can pick from.
     void Show_Select_Ally()
     {
+
+        //the close button.
+        //Close Button.
+        if (GUI.Button(new Rect(20, 20, 120, 20), "Close"))
+        {
+            b_Ally_Pick_Screen = false;
+            b_Add_Ally = true;
+            //move the ally select stuff back.
+            Ally_Sprite_Table.transform.position = new Vector3(500, 500);
+        }
+
+        //the finish picking is true so now we set up the sprites that were picked.
+        if (b_Finished_Picking)
+        {
+            //check if it's the main/first sprite or the second one.
+            if (b_First_Sprite)
+            {
+                //set the sprite
+                Temp_Tower.Tower_Sprite = Temp_Sprite;
+                //set the name
+                Temp_Tower.Tower_Name = Temp_Name;
+
+            }
+            else
+            {
+                Second_Sprite = Temp_Sprite;
+                Second_Name = Temp_Name;
+            }
+            //clear the name.
+            Temp_Name = "";
+            //clear the sprite.
+            Temp_Sprite = null;
+
+            //if it's the second one we can leave it alone since it's already set. and close this up.
+            b_Ally_Pick_Screen = false;
+            b_Add_Ally = true;
+            b_Finished_Picking = false;
+            //move the ally select stuff back.
+            Ally_Sprite_Table.transform.position = new Vector3(500, 500);
+        }
+
 
     }
 
@@ -314,6 +445,7 @@ public class Stats_Menu_GUI : MonoBehaviour
 
         y_Amount += 25;
 
+       
 
     }
 
@@ -338,5 +470,17 @@ public class Stats_Menu_GUI : MonoBehaviour
         {
             Add_Ally();
         }
+        if (b_Ally_Pick_Screen)
+        {
+            Show_Select_Ally();
+        }
     }
+
+
+    //This is where the fusion logic will come into play and be used. i'll manually place in every combination and what i want it to become.
+    void Attempt_Fuse(string Name_One, string Name_Two)
+    {
+
+    }
+
 }

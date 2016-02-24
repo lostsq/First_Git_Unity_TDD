@@ -244,6 +244,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   b_Stats_Menu_Enabled: 0
+  Temp_Sprite: {fileID: 0}
+  Temp_Name: 
+  b_Finished_Picking: 0
 --- !u!1 &67963827
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +446,7 @@ GameObject:
   - 61: {fileID: 357376913}
   m_Layer: 0
   m_Name: Ally_01
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -593,7 +596,7 @@ GameObject:
   - 61: {fileID: 434310212}
   m_Layer: 0
   m_Name: Ally_04
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -766,7 +769,7 @@ GameObject:
   - 61: {fileID: 809452317}
   m_Layer: 0
   m_Name: Ally_02
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -839,7 +842,7 @@ GameObject:
   - 61: {fileID: 821811378}
   m_Layer: 0
   m_Name: Ally_03
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -912,7 +915,7 @@ GameObject:
   - 61: {fileID: 867108614}
   m_Layer: 0
   m_Name: Ally_02
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1054,7 +1057,7 @@ GameObject:
   - 61: {fileID: 1061249099}
   m_Layer: 0
   m_Name: Ally_03
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1127,7 +1130,7 @@ GameObject:
   - 61: {fileID: 1094855973}
   m_Layer: 0
   m_Name: Ally_01
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1377,7 +1380,7 @@ GameObject:
   - 61: {fileID: 1473940282}
   m_Layer: 0
   m_Name: Ally_04
-  m_TagString: Btn_Allie_Sprite
+  m_TagString: Btn_Ally_Sprite
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

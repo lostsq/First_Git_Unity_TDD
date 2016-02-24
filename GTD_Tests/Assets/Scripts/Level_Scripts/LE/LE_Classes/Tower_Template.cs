@@ -35,6 +35,11 @@ namespace Assets.Scripts.Level_Scripts.LE
             Tower_Sprite = Passed_Sprite;
         }
 
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
+
 
 
 

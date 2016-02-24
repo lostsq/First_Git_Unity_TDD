@@ -42,5 +42,11 @@ namespace Assets.Scripts.Level_Scripts.LE
             Enemy_Mod = Passed_Mod;
             Enemy_Sprite = Passed_Sprite;
         }
+
+
+        public object Clone()
+        {
+            return this.MemberwiseClone();
+        }
     }
 }

@@ -178,7 +178,7 @@ public class Enemies_GUI : MonoBehaviour {
                 //need to have this enemy as the one.
                 i_Enemy_Edit_Number = i;
                 //we set the temp enemy to this one to edit.
-                Temp_Enemy = Stats.Enemy_List[i];
+                Temp_Enemy = (Enemy_Template)Stats.Enemy_List[i].Clone();
                 f_scroll = 0;
             }
 

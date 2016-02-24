@@ -94,6 +94,17 @@ namespace Assets.Scripts.Level_Scripts.Handlers
                 //close the menu.
                 Cur.b_Close_Enemy_Sprites = true;
             }
+            else if (s_tag == G_Tags.Button_Ally_Sprite)
+            {
+                //get the allies GUI
+                Stats_Menu_GUI Cur = GameObject.Find(G_Tags.Name_Stats_Menu).GetComponent<Stats_Menu_GUI>();
+                //set the temp sprite.
+                Cur.Temp_Sprite = Passed_Button.gameObject.GetComponent<SpriteRenderer>().sprite;
+                //set the name.
+                Cur.Temp_Name = Passed_Button.name;
+                //set the close to true.
+                Cur.b_Finished_Picking = true;
+            }
             else
             {
                 //this is if there is no action for a tag to let us know.

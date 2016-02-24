@@ -33,7 +33,8 @@ public class LE_Stats_Controller : MonoBehaviour {
 
 
     //this is the gems that are unlocked. right now don't have any listed cause need to get them.
-
+    //This is a placeholder list for testing reasons.
+    List<bool> Gem_Locks = new List<bool>();
 
 
     // Use this for initialization
