@@ -1,18 +1,32 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets.Scripts.Level_Scripts.LE;
+using Assets.Scripts.Level_Scripts.LE.LE_Classes;
 using System.Collections.Generic;
 
 public class LE_Stats_Controller : MonoBehaviour {
 
     Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
+    
 
+    //the name of the level
+    public string s_Level_Name = "None";
+    //Starting Energy: how much energy does the player start with. might have 100 be the max.
+    public int i_starting_energy = 100;
+    //Starting Health: how much hp the temple has.
+    public int i_starting_HP = 100;
+    public int i_max_HP = 100;
+    //shared energy? used for story levels where the energy is shared between levels. false if stand alone level.
+    public bool b_shared_Energy = true;
+    //Shared allies. Used for when allies from previous unlocks are shared, false if only using what is unlocked.
+    public bool b_shared_Allies = true;
 
     //Field Size: how big is the field.
     int i_field_width = 10;
     int i_field_height = 10;
     //the path number.
     int i_Path_Number = 0;
+   
 
     GameObject[,] All_Field_Spots;
     public GameObject Empty_Field_Spot;
@@ -23,23 +37,31 @@ public class LE_Stats_Controller : MonoBehaviour {
     //the tower and enemy lists. these hold the towers that are loaded/saved.
     public List<Tower_Template> Tower_List = new List<Tower_Template>();
     public List<Enemy_Template> Enemy_List = new List<Enemy_Template>();
+    public List<Lock_Gem> Gem_Lock_List = new List<Lock_Gem>();
+    //This is manually changed when gems are added/removed from the game as a whole.
+    void Setup_Gem_Lock_List()
+    {
+        //Right now since the gem list is not finalized will just do like 2 or 3 temp ones.
 
-    //Starting Energy: how much energy does the player start with. might have 100 be the max.
-    int i_starting_energy = 100;
+        //RUBY
+        Lock_Gem Ruby = new Lock_Gem("Ruby", false, 100);
+        Gem_Lock_List.Add(Ruby);
+        //TOPAZ
+        Lock_Gem Topaz = new Lock_Gem("Topaz", false, 140);
+        Gem_Lock_List.Add(Topaz);
+        //OPAL
+        Lock_Gem Opal = new Lock_Gem("Opal", false, 180);
+        Gem_Lock_List.Add(Opal);
 
-    //Starting Health: how much hp the temple has.
-    int i_starting_HP = 100;
-    int i_max_HP = 100;
-
-
-    //this is the gems that are unlocked. right now don't have any listed cause need to get them.
-    //This is a placeholder list for testing reasons.
-    List<bool> Gem_Locks = new List<bool>();
+    }
 
 
     // Use this for initialization
     void Start()
     {
+        //we need to set up every gem that there is in the gem lock list.
+        Setup_Gem_Lock_List();
+
         //test for enemy gui.
         Enemy_List.Add(new Enemy_Template("Test1", 1, 2, 3, 4, 5, 6, 7, 8, "Test2", Test_Sprite));
         Enemy_List.Add(new Enemy_Template("Test4", 11, 22, 33, 44, 55, 66, 77, 88, "Test5", Test_Sprite));
@@ -88,6 +110,8 @@ public class LE_Stats_Controller : MonoBehaviour {
 
         
     }
+
+    
 
 
     //This will generate out the field based off of the size, and add/remove any spots. if the spot has something and it is removed then that is removed with it.

@@ -8,6 +8,7 @@ public class Stats_Menu_GUI : MonoBehaviour
     bool b_Size_Menu_Open = false;
     string temp_String_01 = "";
     string temp_String_02 = "";
+    string Temp_Value = "";
     //The tags used in the game.
     Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
     //this is the up/down for scrolling.
@@ -18,6 +19,7 @@ public class Stats_Menu_GUI : MonoBehaviour
     bool b_Add_Ally = false;
     bool b_Ally_Pick_Screen = false;
     bool b_First_Sprite = false;
+    bool b_Lock_Gem_Screen = false;
 
     //This is the x value to keep everything centered.
     int i_To_Center_X_Start = 200;
@@ -53,7 +55,7 @@ public class Stats_Menu_GUI : MonoBehaviour
         //get the stats thing we are working with to get the enemies.
         Stats = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
         Ally_Sprite_Table = GameObject.Find("LE_Allies_Background");
-        
+
     }
 
     // Update is called once per frame
@@ -227,6 +229,7 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Add_Ally = false;
             Temp_Tower = null;
             i_Tower_Location_Number = -1;
+            f_scroll = 0;
         }
 
         //Save Button.
@@ -251,6 +254,7 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Add_Ally = false;
             Temp_Tower = null;
             i_Tower_Location_Number = -1;
+            f_scroll = 0;
         }
 
 
@@ -273,12 +277,12 @@ public class Stats_Menu_GUI : MonoBehaviour
         //NAME
         //name label
         //[sprite] [<-Fuze] [sprite] we use the tower sprite, and then the temp sprite.
-        
+
 
 
         //Name
         GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Name");
-        y_offset += i_Size_Height_Amount/2;
+        y_offset += i_Size_Height_Amount / 2;
         //Name
         GUI.Box(new Rect(Screen.width / 2 - (i_Level_Size / 2), y_offset, i_Level_Size, i_Size_Height_Amount / 2), Temp_Tower.Tower_Name);
         y_offset += i_Size_Height_Amount / 2;
@@ -297,7 +301,7 @@ public class Stats_Menu_GUI : MonoBehaviour
             //we will perform a fuse as long as it can be.. this logic will be manually entered with each combination.
         }
         //Second sprite box.
-        if (GUI.Button(new Rect(Screen.width / 2 - ((i_Sprite_Edit_Size) / 2) + (i_Sprite_Edit_Size *1.5f) , y_offset, i_Sprite_Edit_Size, i_Size_Height_Amount), Second_Sprite.texture))
+        if (GUI.Button(new Rect(Screen.width / 2 - ((i_Sprite_Edit_Size) / 2) + (i_Sprite_Edit_Size * 1.5f), y_offset, i_Sprite_Edit_Size, i_Size_Height_Amount), Second_Sprite.texture))
         {
             //open the sprite menu for the second sprite.
             b_Ally_Pick_Screen = true;
@@ -305,7 +309,7 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Add_Ally = false;
             Ally_Sprite_Table.transform.position = new Vector3(0, 0);
         }
-        y_offset += i_Size_Height_Amount*1.5f;
+        y_offset += i_Size_Height_Amount * 1.5f;
 
         //LEVEL
         GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "Level");
@@ -342,7 +346,7 @@ public class Stats_Menu_GUI : MonoBehaviour
         int.TryParse(Temp_Value, out Temp_Tower.Tower_Range);
 
         y_offset += i_Size_Height_Amount;
-        
+
         //POINTS
         GUI.Box(new Rect(Screen.width / 2 / 2, y_offset, Screen.width / 2, i_Size_Height_Amount / 2), "HP");
         y_offset += i_Size_Height_Amount / 2;
@@ -366,6 +370,7 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Add_Ally = true;
             //move the ally select stuff back.
             Ally_Sprite_Table.transform.position = new Vector3(500, 500);
+            f_scroll = 0;
         }
 
         //the finish picking is true so now we set up the sprites that were picked.
@@ -396,19 +401,73 @@ public class Stats_Menu_GUI : MonoBehaviour
             b_Finished_Picking = false;
             //move the ally select stuff back.
             Ally_Sprite_Table.transform.position = new Vector3(500, 500);
+            f_scroll = 0;
         }
 
 
     }
 
+    //this is the locked gem menu.
+    void Show_Locked_Gems()
+    {
+        //Close Button.
+        if (GUI.Button(new Rect(20, 20, 120, 20), "Close"))
+        {
+            b_Stats_Menu_Enabled = true;
+            b_Lock_Gem_Screen = false;
+            f_scroll = 0;
+        }
+
+        float Ty = 20 + f_scroll;
+
+        //go through each of the locked gems and show/modify them as needed.
+        for (int i = 0; i < Stats.Gem_Lock_List.Count; i++)
+        {
+            float X_Size = 120;
+            float X_Start = Screen.width / 2 - ((X_Size * 3) / 2);
+
+
+        //NAME
+        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Name");
+        GUI.Box(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].s_Name);
+        X_Start += X_Size;
+        //LOCKED
+        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Locked");
+        if (GUI.Button(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].b_Locked.ToString()))
+        {
+            if (Stats.Gem_Lock_List[i].b_Locked)
+            {
+                Stats.Gem_Lock_List[i].b_Locked = false;
+            }
+            else
+            {
+                Stats.Gem_Lock_List[i].b_Locked = true;
+            }
+        }
+        X_Start += X_Size;
+        //COST
+        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Cost");
+        string Temp_Value_Gem_Cost = Stats.Gem_Lock_List[i].Cost.ToString();
+        Temp_Value_Gem_Cost = GUI.TextField(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Temp_Value_Gem_Cost, 5);
+        int.TryParse(Temp_Value_Gem_Cost, out Stats.Gem_Lock_List[i].Cost);
+
+
+        Ty += i_Size_Height_Amount + 5;
+
+    }
+
+
+}
+
 
     void Stats_Menu_Enabled()
     {
         int x_Amount = Screen.width / 2;
-        int y_Amount = 30;
+        float y_Amount = 10 + f_scroll;
+        int i_Temp_Height = 25;
 
         //Close Button.
-        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, 20), "Close"))
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Close"))
         {
             b_Stats_Menu_Enabled = false;
             //set the collider to add the tag.
@@ -422,30 +481,108 @@ public class Stats_Menu_GUI : MonoBehaviour
             //destory the object. muahahaha... hmm don't think i need to, but meh.
             GameObject.Destroy(Temp);
         }
+        y_Amount += i_Temp_Height + 5;
 
-        y_Amount += 25;
+
+        //Name
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Name");
+        y_Amount += i_Temp_Height;
+        Stats.s_Level_Name = GUI.TextField(new Rect(x_Amount, y_Amount, 120, 20), Stats.s_Level_Name, 20);
+        /*
+        y_offset += i_Size_Height_Amount / 2;
+        Temp_Value = Temp_Enemy.Enemy_HP.ToString();
+        Temp_Value = 
+        int.TryParse(Temp_Value, out Temp_Enemy.Enemy_HP);
+        */
+        y_Amount += i_Temp_Height + 5;
+
+        //Starting Energy
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Energy Starting");
+        y_Amount += i_Temp_Height;
+        Temp_Value = Stats.i_starting_energy.ToString();
+        Temp_Value = GUI.TextField(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), Temp_Value, 20);
+        int.TryParse(Temp_Value, out Stats.i_starting_energy);
+        y_Amount += i_Temp_Height;
+        //Shared energy?
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Shared Energy");
+        y_Amount += i_Temp_Height;
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), Stats.b_shared_Energy.ToString()))
+        {
+            if (Stats.b_shared_Energy)
+            {
+                Stats.b_shared_Energy = false;
+            }
+            else
+            {
+                Stats.b_shared_Energy = true;
+            }
+        }
+        y_Amount += i_Temp_Height + 5;
+
+        //Max HP
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Max HP");
+        y_Amount += i_Temp_Height;
+        Temp_Value = Stats.i_max_HP.ToString();
+        Temp_Value = GUI.TextField(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), Temp_Value, 20);
+        int.TryParse(Temp_Value, out Stats.i_max_HP);
+        y_Amount += i_Temp_Height + 5;
+
+        //Starting HP
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, 20), "Starting HP");
+        y_Amount += i_Temp_Height;
+        Temp_Value = Stats.i_starting_HP.ToString();
+        Temp_Value = GUI.TextField(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), Temp_Value, 20);
+        int.TryParse(Temp_Value, out Stats.i_starting_HP);
+        y_Amount += i_Temp_Height + 5;
 
         //we will now create the add button.
-        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, 20), "Change Size"))
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Change Size"))
         {
             //disable the menu and enable the size menu.
             b_Stats_Menu_Enabled = false;
             b_Size_Menu_Open = true;
+            f_scroll = 0;
         }
 
-        y_Amount += 25;
+        y_Amount += i_Temp_Height;
 
         //we will now create the add button.
-        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, 20), "Add Allies!"))
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Add Allies!"))
         {
             //disable the menu and enable the size menu.
             b_Stats_Menu_Enabled = false;
             b_Ally_Menu = true;
+            f_scroll = 0;
         }
 
-        y_Amount += 25;
+        y_Amount += i_Temp_Height;
 
-       
+        //Locked Allies.
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Unlocked Allies"))
+        {
+            //disable the menu and enable the size menu.
+            b_Stats_Menu_Enabled = false;
+            b_Lock_Gem_Screen = true;
+            f_scroll = 0;
+        }
+
+        y_Amount += i_Temp_Height;
+        //Shared energy?
+        GUI.Box(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Shared Allies");
+        y_Amount += i_Temp_Height;
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), Stats.b_shared_Allies.ToString()))
+        {
+            if (Stats.b_shared_Allies)
+            {
+                Stats.b_shared_Allies = false;
+            }
+            else
+            {
+                Stats.b_shared_Allies = true;
+            }
+        }
+
+
 
     }
 
@@ -473,6 +610,10 @@ public class Stats_Menu_GUI : MonoBehaviour
         if (b_Ally_Pick_Screen)
         {
             Show_Select_Ally();
+        }
+        if (b_Lock_Gem_Screen)
+        {
+            Show_Locked_Gems();
         }
     }
 
