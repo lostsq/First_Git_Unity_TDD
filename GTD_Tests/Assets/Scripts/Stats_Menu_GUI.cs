@@ -467,7 +467,7 @@ public class Stats_Menu_GUI : MonoBehaviour
         int i_Temp_Height = 25;
 
         //Close Button.
-        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Close"))
+        if (GUI.Button(new Rect(20, 20, 120, 20), "Close"))
         {
             b_Stats_Menu_Enabled = false;
             //set the collider to add the tag.
@@ -582,7 +582,13 @@ public class Stats_Menu_GUI : MonoBehaviour
             }
         }
 
+        y_Amount += i_Temp_Height *2;
 
+        //Locked Allies.
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Save Level"))
+        {
+            Stats.Save_Level();
+        }
 
     }
 

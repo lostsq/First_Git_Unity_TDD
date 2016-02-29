@@ -246,6 +246,10 @@ public class Mouse_Interaction_Script : MonoBehaviour
                             New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = true;
                             New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<BoxCollider2D>().enabled = true;
 
+                            //we get the remove and set it's layer to be that of the parent +1 so it layers over it.
+                            New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().sortingOrder = New_Deco.gameObject.GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+
                         }
                         else
                         {

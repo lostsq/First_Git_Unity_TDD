@@ -3,6 +3,7 @@ using System.Collections;
 using Assets.Scripts.Level_Scripts.LE;
 using Assets.Scripts.Level_Scripts.LE.LE_Classes;
 using System.Collections.Generic;
+using UnityEditor;
 
 public class LE_Stats_Controller : MonoBehaviour {
 
@@ -659,6 +660,51 @@ public class LE_Stats_Controller : MonoBehaviour {
         Move_This.transform.parent = Temp_Invintory.transform;
         Move_This.GetComponent<SpriteRenderer>().sortingOrder = Temp_Invin_Rend.sortingOrder + 1;
 
+    }
+
+
+    //save the level to the location the user picks.
+    public void Save_Level()
+    {
+
+        EditorUtility.DisplayDialog(
+                    "Select Save Location",
+                    "You Must Select where to save the level at!",
+                    "Ok");
+
+        var path = EditorUtility.SaveFilePanel(
+                    "Save level as Txt file", "",
+                    s_Level_Name + ".txt",
+                    "txt");
+        if (path.Length != 0)
+        {
+
+            Debug.Log(path.ToString());
+
+            using (System.IO.StreamWriter file =
+            new System.IO.StreamWriter(path))
+            {
+                file.WriteLine(s_Level_Name);
+            }
+        }
+    }
+
+    //loads the level from the location the user picked.
+    public void Load_Level()
+    {
+        EditorUtility.DisplayDialog(
+                    "Select Save Location",
+                    "You Must Select where to save the level at!",
+                    "Ok");
+
+        var path = EditorUtility.OpenFilePanel(
+                    "Overwrite with txt",
+                    "",
+                    "txt");
+        if (path.Length != 0)
+        {
+            Debug.Log(path.ToString());
+        }
     }
 
 }
