@@ -636,17 +636,6 @@ public class LE_Stats_Controller : MonoBehaviour {
 
     }
 
-    //this will return the gameobject of the spot you are looking for.
-    private GameObject Get_Spot(int px, int py)
-    {
-        //Set up the gameobject to return. will be null if there is nothing there.
-        GameObject Return_This = null;
-
-
-
-        return Return_This;
-    }
-
     //this will move the gameobject back to the invintory. just centering it.
     private void Move_To_Invintory(GameObject Move_This)
     {
@@ -662,6 +651,46 @@ public class LE_Stats_Controller : MonoBehaviour {
 
     }
 
+    //clears the field, used when importing a level and stuff is out on the field.
+    private void Clear_Field()
+    {
+        //reset the path number.
+        i_Path_Number = 0;
+
+        //only need to worry about the path maker and start. the rest we can just delete.
+        for (int x = 0; x <= All_Field_Spots.GetUpperBound(0); x++)
+        {
+            for (int y = 0; y <= All_Field_Spots.GetUpperBound(1); y++)
+            {
+                for (int q = 0; q < All_Field_Spots[x, y].gameObject.transform.childCount; q++)
+                {
+                    //check if it's the start
+                    if (All_Field_Spots[x, y].gameObject.transform.GetChild(q).name == G_Tags.Name_Start_Point)
+                    {
+                        //it's outside the new field so we move it back to invintory.
+                        Move_To_Invintory(All_Field_Spots[x, y].gameObject.transform.GetChild(q).gameObject);
+                        q--;
+                    }
+                    //check if it's the path maker.
+                    else if (All_Field_Spots[x, y].gameObject.transform.GetChild(q).name == G_Tags.Name_Path_Maker)
+                    {
+                        All_Field_Spots[x, y].gameObject.transform.GetChild(q).gameObject.GetComponent<LE_Path_Creator>().Reset_Children('r');
+                        Move_To_Invintory((All_Field_Spots[x, y].gameObject.transform.GetChild(q).gameObject));
+                        q--;
+                    }
+                    else
+                    {
+                        GameObject.Destroy((All_Field_Spots[x, y].gameObject.transform.GetChild(q).gameObject));
+                        q--;
+                    }
+
+                    
+                }
+                //now all other children we destory.
+                //GameObject.Destroy(All_Field_Spots[x, y].gameObject);
+            }
+        }
+    }
 
     //save the level to the location the user picks.
     public void Save_Level()
@@ -678,13 +707,76 @@ public class LE_Stats_Controller : MonoBehaviour {
                     "txt");
         if (path.Length != 0)
         {
+            //Debug.Log(path.ToString());
 
-            Debug.Log(path.ToString());
-
-            using (System.IO.StreamWriter file =
-            new System.IO.StreamWriter(path))
+            //using system.io we will write the file to the selected location.
+            try
             {
-                file.WriteLine(s_Level_Name);
+                //we will need to place in something for overwriting files, if it doesn't.
+                using (System.IO.StreamWriter file =
+                            new System.IO.StreamWriter(path))
+                {
+                    //going to use this for all the writing and just change it as needed.
+                    string Write_This = "";
+
+                    //Name
+                    Write_This = "Name(" + s_Level_Name;
+                    file.WriteLine(Write_This);
+
+                    //Stats
+                    Write_This = "Starting Energy(" + i_starting_energy;
+                    file.WriteLine(Write_This);
+                    Write_This = "Shared Enery(" + b_shared_Energy;
+                    file.WriteLine(Write_This);
+                    Write_This = "Starting HP(" + i_starting_HP;
+                    file.WriteLine(Write_This);
+                    Write_This = "Max HP(" + i_max_HP;
+                    file.WriteLine(Write_This);
+                    Write_This = "Shared Allies(" + b_shared_Allies;
+                    file.WriteLine(Write_This);
+                    //unlocked allies
+                    for (int i = 0; i < Gem_Lock_List.Count; i++)
+                    {
+                        Write_This = "Lock Gem(" + Gem_Lock_List[i].s_Name + "," + Gem_Lock_List[i].b_Locked + "," + Gem_Lock_List[i].Cost;
+                        file.WriteLine(Write_This);
+                    }
+                    //Allies
+                    for (int i = 0; i < Tower_List.Count; i++)
+                    {
+                        Write_This = "Tower(" + Tower_List[i].Tower_Name + "," + Tower_List[i].Tower_Level + "," + Tower_List[i].Tower_Power + "," + Tower_List[i].Tower_Speed + "," + Tower_List[i].Tower_Range + "," + Tower_List[i].Tower_Points;
+                        file.WriteLine(Write_This);
+                    }
+                    //Enemies
+                    for (int i = 0; i < Enemy_List.Count; i++)
+                    {
+                        Write_This = "Enemies(" + Enemy_List[i].Enemy_Name + "," + Enemy_List[i].Enemy_Wave_Number + "," + Enemy_List[i].Enemy_HP + "," + Enemy_List[i].Enemy_Speed + "," + Enemy_List[i].Enemy_Power + "," + Enemy_List[i].Enemy_Amount + "," + Enemy_List[i].Enemy_Start_After + "," + Enemy_List[i].Enemy_Reward_Single + "," + Enemy_List[i].Enemy_Reward_Wave + "," + Enemy_List[i].Enemy_Mod;
+                        file.WriteLine(Write_This);
+                    }
+                    //Grid size
+                    Write_This = "Grid X(" + i_field_width;
+                    file.WriteLine(Write_This);
+                    Write_This = "Grid Y(" + i_field_width;
+                    file.WriteLine(Write_This);
+                    //Grid objects
+                    for (int x = 0; x < i_field_width; x++)
+                    {
+                        for (int y = 0; y < i_field_height; y++)
+                        {
+                            for (int i = 0; i < All_Field_Spots[x, y].transform.childCount; i++)
+                            {
+                                Write_This = "Field Object X/Y(" + All_Field_Spots[x, y].transform.GetChild(i).name + "," + x + "," + y;
+                                file.WriteLine(Write_This);
+                            }
+                        }
+                    }
+                }
+            }
+            catch (System.Exception)
+            {
+                EditorUtility.DisplayDialog(
+                    "Error",
+                    "Error occured saving the level, please try again.",
+                    "Ok");
             }
         }
     }
@@ -693,8 +785,8 @@ public class LE_Stats_Controller : MonoBehaviour {
     public void Load_Level()
     {
         EditorUtility.DisplayDialog(
-                    "Select Save Location",
-                    "You Must Select where to save the level at!",
+                    "Select File To Load",
+                    "You Must Select what file to load! \n\n Your current level will be overwritten.",
                     "Ok");
 
         var path = EditorUtility.OpenFilePanel(
@@ -703,7 +795,176 @@ public class LE_Stats_Controller : MonoBehaviour {
                     "txt");
         if (path.Length != 0)
         {
-            Debug.Log(path.ToString());
+            //Debug.Log(path.ToString());
+            //a string list to put in all of the strings for the level so it doesn't build as it reads.
+            List<string> New_Level = new List<string>();
+            //go through and read each of the lines and start working with them.
+            try
+            {
+
+
+                using (System.IO.StreamReader file =
+                            new System.IO.StreamReader(path))
+                {
+                    while (file.Peek() >= 0)
+                    {
+                        New_Level.Add(file.ReadLine());
+                    }
+
+                }
+            }
+            catch (System.Exception)
+            {
+                New_Level = null;
+                EditorUtility.DisplayDialog(
+                    "Error",
+                    "Error occured reading the level file, please try again.",
+                    "Ok");
+            }
+
+            try
+            {
+                //the file was read, next we check the data.
+                if (New_Level != null)
+                {
+                    bool New_Size = false;
+
+                    //the size of the level has to be grabbed first since if the level is bigger we don't want it to be placing items in a null area.
+                    foreach (string Cur_Line in New_Level)
+                    {
+                        if (Cur_Line.Contains("Grid X("))
+                        {
+                            //use split to get the number
+                            i_field_width = int.Parse(Cur_Line.Split('(')[1]);
+                            New_Size = true;
+                        }
+                        if (Cur_Line.Contains("Grid Y("))
+                        {
+                            //use split to get the number
+                            i_field_height = int.Parse(Cur_Line.Split('(')[1]);
+                            New_Size = true;
+                        }
+                    }
+
+                    //clear out the old field.
+                    Clear_Field();
+
+                    //update the field size.
+                    if (New_Size)
+                    {
+                        Update_Field_Size(i_field_width, i_field_height);
+                    }
+
+                    //the tower and enemy lists. these hold the towers that are loaded/saved.
+                    List<Tower_Template> Temp_Tower_List = new List<Tower_Template>();
+                    List<Enemy_Template> Temp_Enemy_List = new List<Enemy_Template>();
+                    List<Lock_Gem> Temp_Gem_Lock_List = new List<Lock_Gem>();
+
+                    //go through each of the line.
+                    foreach (string Cur_Line in New_Level)
+                    {
+                        if (Cur_Line.Contains("Name("))
+                        {
+                            //use split to get the value
+                            s_Level_Name = Cur_Line.Split('(')[1];
+                        }
+                        if (Cur_Line.Contains("Starting Energy("))
+                        {
+                            //use split to get the value
+                            i_starting_energy = int.Parse(Cur_Line.Split('(')[1]);
+                        }
+                        if (Cur_Line.Contains("Shared Enery("))
+                        {
+                            //use split to get the value
+                            b_shared_Energy = bool.Parse(Cur_Line.Split('(')[1]);
+                        }
+                        if (Cur_Line.Contains("Starting HP("))
+                        {
+                            //use split to get the value
+                            i_starting_HP = int.Parse(Cur_Line.Split('(')[1]);
+                        }
+                        if (Cur_Line.Contains("Max HP("))
+                        {
+                            //use split to get the value
+                            i_max_HP = int.Parse(Cur_Line.Split('(')[1]);
+                        }
+                        if (Cur_Line.Contains("Shared Allies("))
+                        {
+                            //use split to get the value
+                            b_shared_Allies = bool.Parse(Cur_Line.Split('(')[1]);
+                        }
+
+
+                        //LOCK GEMS
+                        //Write_This = "Lock Gem(" + Gem_Lock_List[i].s_Name + "," + Gem_Lock_List[i].b_Locked + "," + Gem_Lock_List[i].Cost;
+                        if (Cur_Line.Contains("Lock Gem("))
+                        {
+                            //use split to get the value
+                            string Make_Split = Cur_Line.Split('(')[1];
+
+                            string t_Name = Make_Split.Split(',')[0];
+                            bool t_Lock = bool.Parse(Cur_Line.Split(',')[1]);
+                            int t_Cost = int.Parse(Cur_Line.Split(',')[2]);
+                            Temp_Gem_Lock_List.Add(new Lock_Gem(t_Name, t_Lock, t_Cost));
+                        }
+
+                        //TOWERS
+                        //Write_This = "Tower(" + Tower_List[i].Tower_Name + "," + Tower_List[i].Tower_Level + "," + Tower_List[i].Tower_Power + "," + Tower_List[i].Tower_Speed + "," + Tower_List[i].Tower_Range + "," + Tower_List[i].Tower_Points;
+                        if (Cur_Line.Contains("Tower("))
+                        {
+                            //use split to get the value
+                            string Make_Split = Cur_Line.Split('(')[1];
+
+                            string t_Name = Make_Split.Split(',')[0];
+                            int t_Level = int.Parse(Make_Split.Split(',')[1]);
+                            int t_Power = int.Parse(Make_Split.Split(',')[2]);
+                            int t_Speed = int.Parse(Make_Split.Split(',')[3]);
+                            int t_Range = int.Parse(Make_Split.Split(',')[4]);
+                            int t_Points = int.Parse(Make_Split.Split(',')[5]);
+
+                            //tricky part. need to get the sprite that matches the name.
+                            GameObject Parent = GameObject.Find("All_Allies");
+                            bool sprite_found = false;
+                            //go through all the children.
+                            for (int i = 0; i < Parent.transform.childCount; i++)
+                            {
+                                if (Parent.transform.GetChild(i).name == t_Name)
+                                {
+                                    Temp_Tower_List.Add(new Tower_Template(t_Name, t_Level, t_Speed, t_Power, t_Range, t_Points, Parent.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite));
+                                    sprite_found = true;
+                                }
+                            }
+
+                            //check if the sprite was found, if not we tell the user error.
+                            if (!sprite_found)
+                            {
+                                EditorUtility.DisplayDialog("Error", "No tower sprite for " + t_Name + " was found.", "Ok");
+                            }
+
+                        }
+                    }
+
+                    //switch out all of the temp stuff.
+                    Gem_Lock_List = Temp_Gem_Lock_List;
+                    Enemy_List = Temp_Enemy_List;
+                    Tower_List = Temp_Tower_List;
+
+
+                    //a little confirm dialog.
+                    EditorUtility.DisplayDialog(
+                       "Loaded",
+                       "The level has been loaded.",
+                       "Ok");
+
+                }
+            }
+            catch (System.Exception s)
+            {
+                EditorUtility.DisplayDialog(
+              "Error",
+              "Error occured loading the level file, please check the file and try again. \n\n" + s,
+              "Ok");
+            }
         }
     }
 

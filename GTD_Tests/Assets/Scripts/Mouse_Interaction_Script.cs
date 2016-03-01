@@ -241,6 +241,8 @@ public class Mouse_Interaction_Script : MonoBehaviour
                             GameObject New_Deco = GameObject.Instantiate(Collider_Working_With.gameObject);
                             //now we will tag it since it can only be removed with something else.
                             New_Deco.tag = G_Tags.Tag_Field_Decoration;
+                            //we will now rename it to the same name as the decoration it was working with.
+                            New_Deco.name = Collider_Working_With.gameObject.name;
                             //now we snap it to the new spot.
                             Snap_To_Spot(Highest_Collider.gameObject, New_Deco);
                             New_Deco.gameObject.transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().enabled = true;

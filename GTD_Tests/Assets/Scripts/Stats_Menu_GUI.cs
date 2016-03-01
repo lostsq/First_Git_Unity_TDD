@@ -584,10 +584,17 @@ public class Stats_Menu_GUI : MonoBehaviour
 
         y_Amount += i_Temp_Height *2;
 
-        //Locked Allies.
+        //Save
         if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Save Level"))
         {
             Stats.Save_Level();
+        }
+        y_Amount += i_Temp_Height;
+
+        //Load.
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Load Level"))
+        {
+            Stats.Load_Level();
         }
 
     }
