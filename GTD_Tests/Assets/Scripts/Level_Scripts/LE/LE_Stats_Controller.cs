@@ -770,6 +770,12 @@ public class LE_Stats_Controller : MonoBehaviour {
                         }
                     }
                 }
+
+                EditorUtility.DisplayDialog(
+                    "Save",
+                    "Save Complete",
+                    "Ok");
+
             }
             catch (System.Exception)
             {
@@ -1042,10 +1048,9 @@ public class LE_Stats_Controller : MonoBehaviour {
                                 if (i_Path_Number <= t_Path_Number)
                                 {
                                     i_Path_Number = t_Path_Number + 1;
+                                    Path_Made_x = t_x;
+                                    Path_Made_y = t_y;
                                 }
-                                Path_Made_x = t_x;
-                                Path_Made_y = t_y;
-
                                 Temp.transform.position = All_Field_Spots[t_x, t_y].transform.localPosition;
                                 Temp.transform.localScale = All_Field_Spots[t_x, t_y].transform.localScale;
 
@@ -1113,7 +1118,38 @@ public class LE_Stats_Controller : MonoBehaviour {
                     //set the path makers remove switch stuff here.
                     if (b_t_Path_Made)
                     {
-                        
+                        int[] Ar_x = { Path_Made_x - 1, Path_Made_x + 1, Path_Made_x, Path_Made_x };
+                        int[] Ar_y = { Path_Made_y, Path_Made_y, Path_Made_y - 1, Path_Made_y + 1 };
+
+                        for (int i = 0; i < 4; i++)
+                        {
+                            if (Ar_x[i] > 0 && Ar_x[i] <= All_Field_Spots.GetUpperBound(0) && Ar_y[i] > 0 && Ar_y[i] <= All_Field_Spots.GetUpperBound(1))
+                            {
+                                //since we have the x/y we just check around it till we find the path maker tool.
+                                if (All_Field_Spots[Ar_x[i], Ar_y[i]].transform.childCount > 0)
+                                {
+                                    if (All_Field_Spots[Ar_x[i], Ar_y[i]].transform.GetChild(0).name == G_Tags.Name_Path_Maker)
+                                    {
+                                        if (i == 0)
+                                        {
+                                            All_Field_Spots[Ar_x[i], Ar_y[i]].transform.GetChild(0).GetComponent<LE_Path_Creator>().Reset_Children('a');
+                                        }
+                                        if (i == 1)
+                                        {
+                                            All_Field_Spots[Ar_x[i], Ar_y[i]].transform.GetChild(0).GetComponent<LE_Path_Creator>().Reset_Children('d');
+                                        }
+                                        if (i == 2)
+                                        {
+                                            All_Field_Spots[Ar_x[i], Ar_y[i]].transform.GetChild(0).GetComponent<LE_Path_Creator>().Reset_Children('w');
+                                        }
+                                        if (i == 3)
+                                        {
+                                            All_Field_Spots[Ar_x[i], Ar_y[i]].transform.GetChild(0).GetComponent<LE_Path_Creator>().Reset_Children('s');
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
 
                     //switch out all of the temp stuff.
