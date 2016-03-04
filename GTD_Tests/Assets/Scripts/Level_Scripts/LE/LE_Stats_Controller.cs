@@ -64,11 +64,11 @@ public class LE_Stats_Controller : MonoBehaviour {
         Setup_Gem_Lock_List();
 
         //test for enemy gui.
-        Enemy_List.Add(new Enemy_Template("Test1", 1, 2, 3, 4, 5, 6, 7, 8, "Test2", Test_Sprite));
-        Enemy_List.Add(new Enemy_Template("Test4", 11, 22, 33, 44, 55, 66, 77, 88, "Test5", Test_Sprite));
+        //Enemy_List.Add(new Enemy_Template("Test1", 1, 2, 3, 4, 5, 6, 7, 8, "Test2", Test_Sprite));
+        //Enemy_List.Add(new Enemy_Template("Test4", 11, 22, 33, 44, 55, 66, 77, 88, "Test5", Test_Sprite));
         //test for allies/towers.
-        Tower_List.Add(new Tower_Template("Tower1", 1, 2, 3, 4, 5, Test_Sprite));
-        Tower_List.Add(new Tower_Template("Tower2", 12, 22, 32, 42, 52, Test_Sprite));
+        //Tower_List.Add(new Tower_Template("Tower1", 1, 2, 3, 4, 5, Test_Sprite));
+        //Tower_List.Add(new Tower_Template("Tower2", 12, 22, 32, 42, 52, Test_Sprite));
 
 
         //Debug.Log("Start field called");
@@ -859,6 +859,10 @@ public class LE_Stats_Controller : MonoBehaviour {
                     List<Tower_Template> Temp_Tower_List = new List<Tower_Template>();
                     List<Enemy_Template> Temp_Enemy_List = new List<Enemy_Template>();
                     List<Lock_Gem> Temp_Gem_Lock_List = new List<Lock_Gem>();
+                    //These are used to tell the path maker where the last path is so it links up correctly.
+                    bool b_t_Path_Made = false;
+                    int Path_Made_x = 0;
+                    int Path_Made_y = 0;
 
                     //go through each of the line.
                     foreach (string Cur_Line in New_Level)
@@ -942,6 +946,174 @@ public class LE_Stats_Controller : MonoBehaviour {
                             }
 
                         }
+
+                        //ENEMIES 
+                        //Write_This = "Enemies(" + Enemy_List[i].Enemy_Name + "," + Enemy_List[i].Enemy_Wave_Number + "," + Enemy_List[i].Enemy_HP + "," + Enemy_List[i].Enemy_Speed + "," + Enemy_List[i].Enemy_Power + "," + Enemy_List[i].Enemy_Amount + "," + Enemy_List[i].Enemy_Start_After + "," + Enemy_List[i].Enemy_Reward_Single + "," + Enemy_List[i].Enemy_Reward_Wave + "," + Enemy_List[i].Enemy_Mod;
+                        if (Cur_Line.Contains("Enemies("))
+                        {
+                            //use split to get the value
+                            string Make_Split = Cur_Line.Split('(')[1];
+
+                            string t_Name = Make_Split.Split(',')[0];
+                            int t_Wave_Number = int.Parse(Make_Split.Split(',')[1]);
+                            int t_HP = int.Parse(Make_Split.Split(',')[2]);
+                            int t_Speed = int.Parse(Make_Split.Split(',')[3]);
+                            int t_Power = int.Parse(Make_Split.Split(',')[4]);
+                            int t_Amount = int.Parse(Make_Split.Split(',')[5]);
+                            int t_Start_After = int.Parse(Make_Split.Split(',')[6]);
+                            int t_Reward_Single = int.Parse(Make_Split.Split(',')[7]);
+                            int t_Reward_Wave = int.Parse(Make_Split.Split(',')[8]);
+                            string t_Mod = (Make_Split.Split(',')[9]);
+
+
+                            //tricky part. need to get the sprite that matches the name.
+                            GameObject Parent = GameObject.Find("LE_Enemies_Background");
+                            bool sprite_found = false;
+                            //go through all the children.
+                            for (int i = 0; i < Parent.transform.childCount; i++)
+                            {
+                                if (Parent.transform.GetChild(i).name == t_Name)
+                                {
+                                    Temp_Enemy_List.Add(new Enemy_Template(t_Name, t_Reward_Single, t_Reward_Wave, t_Amount, t_Wave_Number, t_Start_After, t_HP, t_Speed, t_Power, t_Mod, Parent.transform.GetChild(i).GetComponent<SpriteRenderer>().sprite));
+                                    sprite_found = true;
+                                }
+                            }
+
+                            //check if the sprite was found, if not we tell the user error.
+                            if (!sprite_found)
+                            {
+                                EditorUtility.DisplayDialog("Error", "No tower sprite for " + t_Name + " was found.", "Ok");
+                            }
+                        }
+
+                        //ADD Items to the field.
+                        //Write_This = "Field Object X/Y(" + All_Field_Spots[x, y].transform.GetChild(i).name + "," + x + "," + y;
+                        if (Cur_Line.Contains("Field Object X/Y("))
+                        {
+                            string Make_Split = Cur_Line.Split('(')[1];
+
+
+                            //START
+                            if (Make_Split.Contains(G_Tags.Name_Start_Point))
+                            {
+                                //move the object to the field at the correct location.
+                                GameObject Temp = GameObject.Find(G_Tags.Name_Start_Point);
+                                int t_x = int.Parse(Make_Split.Split(',')[1]);
+                                int t_y = int.Parse(Make_Split.Split(',')[2]);
+
+                                //reset the scale for moving.
+                                Temp.transform.localScale.Set(1, 1, 1);
+                                Temp.transform.position = All_Field_Spots[t_x, t_y].transform.localPosition;
+                                Temp.transform.localScale = All_Field_Spots[t_x, t_y].transform.localScale;
+
+                                Temp.transform.parent = All_Field_Spots[t_x, t_y].transform;
+                                Temp.GetComponent<SpriteRenderer>().sortingOrder = All_Field_Spots[t_x, t_y].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                                
+                            }
+
+                            //PATH
+                            
+                            if (Make_Split.Contains("w_") || Make_Split.Contains("s_") || Make_Split.Contains("a_") || Make_Split.Contains("d_"))
+                            {
+                                GameObject Temp = null;
+                                if (Make_Split.Contains("w_"))
+                                {
+                                    Temp = GameObject.Instantiate(GameObject.Find("Up"));
+                                }
+                                if (Make_Split.Contains("s_"))
+                                {
+                                    Temp = GameObject.Instantiate(GameObject.Find("Down"));
+                                }
+                                if (Make_Split.Contains("a_"))
+                                {
+                                    Temp = GameObject.Instantiate(GameObject.Find("Left"));
+                                }
+                                if (Make_Split.Contains("d_"))
+                                {
+                                    Temp = GameObject.Instantiate(GameObject.Find("Right"));
+                                }
+
+                                Temp.name = Make_Split.Split(',')[0];
+                                Temp.tag = G_Tags.Tag_Path_Placed_Down;
+                                int t_Path_Number = int.Parse(Make_Split.Split(',')[0].Split('_')[1]);
+                                int t_x = int.Parse(Make_Split.Split(',')[1]);
+                                int t_y = int.Parse(Make_Split.Split(',')[2]);
+                                b_t_Path_Made = true;
+                                if (i_Path_Number <= t_Path_Number)
+                                {
+                                    i_Path_Number = t_Path_Number + 1;
+                                }
+                                Path_Made_x = t_x;
+                                Path_Made_y = t_y;
+
+                                Temp.transform.position = All_Field_Spots[t_x, t_y].transform.localPosition;
+                                Temp.transform.localScale = All_Field_Spots[t_x, t_y].transform.localScale;
+
+                                Temp.transform.parent = All_Field_Spots[t_x, t_y].transform;
+                                Temp.GetComponent<SpriteRenderer>().sortingOrder = All_Field_Spots[t_x, t_y].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                                
+                            }
+
+                            //PATH MAKER
+                            if (Make_Split.Contains(G_Tags.Name_Path_Maker))
+                            {
+                                //move the object to the field at the correct location.
+                                GameObject Temp = GameObject.Find(G_Tags.Name_Path_Maker);
+                                Temp.tag = "Untagged";
+                                int t_x = int.Parse(Make_Split.Split(',')[1]);
+                                int t_y = int.Parse(Make_Split.Split(',')[2]);
+                                //reset the scale for moving.
+                                Temp.transform.localScale.Set(1, 1, 1);
+                                Temp.transform.position = All_Field_Spots[t_x, t_y].transform.position;
+                                Temp.transform.localScale = All_Field_Spots[t_x, t_y].transform.localScale;
+
+                                Temp.transform.parent = All_Field_Spots[t_x, t_y].transform;
+                                Temp.GetComponent<SpriteRenderer>().sortingOrder = All_Field_Spots[t_x, t_y].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                                
+
+                            }
+
+
+                            //DECO
+                            if (Make_Split.Contains("Decoration"))
+                            {
+                                //move the object to the field at the correct location.
+                                GameObject Temp = GameObject.Instantiate(GameObject.Find(Make_Split.Split(',')[0]));
+                                Temp.name = Make_Split.Split(',')[0];
+                                Temp.tag = G_Tags.Tag_Field_Decoration;
+                                int t_x = int.Parse(Make_Split.Split(',')[1]);
+                                int t_y = int.Parse(Make_Split.Split(',')[2]);
+                                //reset the scale for moving.
+                                Temp.transform.localScale.Set(1, 1, 1);
+                                Temp.transform.position = All_Field_Spots[t_x, t_y].transform.localPosition;
+                                Temp.transform.localScale = All_Field_Spots[t_x, t_y].transform.localScale;
+
+                                Temp.transform.parent = All_Field_Spots[t_x, t_y].transform;
+                                Temp.GetComponent<SpriteRenderer>().sortingOrder = All_Field_Spots[t_x, t_y].GetComponent<SpriteRenderer>().sortingOrder + 1;
+
+                                for (int i = 0; i < Temp.transform.childCount; i++)
+                                {
+                                    Temp.transform.GetChild(i).GetComponent<SpriteRenderer>().enabled = true;
+                                    Temp.transform.GetChild(i).GetComponent<SpriteRenderer>().sortingOrder = Temp.GetComponent<SpriteRenderer>().sortingOrder + 1;
+                                    Temp.transform.GetChild(i).GetComponent<BoxCollider2D>().enabled = true;
+                                }
+
+                                
+                            }
+
+
+                            //use split to get the value
+
+                            //string t_Name = Make_Split.Split(',')[0];
+                            //int t_Wave_Number = int.Parse(Make_Split.Split(',')[1]);
+                            //int t_HP = int.Parse(Make_Split.Split(',')[2]);
+                        }
+                    }
+
+                    //set the path makers remove switch stuff here.
+                    if (b_t_Path_Made)
+                    {
+                        
                     }
 
                     //switch out all of the temp stuff.
