@@ -755,7 +755,7 @@ public class LE_Stats_Controller : MonoBehaviour {
                     //Grid size
                     Write_This = "Grid X(" + i_field_width;
                     file.WriteLine(Write_This);
-                    Write_This = "Grid Y(" + i_field_width;
+                    Write_This = "Grid Y(" + i_field_height;
                     file.WriteLine(Write_This);
                     //Grid objects
                     for (int x = 0; x < i_field_width; x++)

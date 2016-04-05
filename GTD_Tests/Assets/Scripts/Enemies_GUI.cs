@@ -146,6 +146,7 @@ public class Enemies_GUI : MonoBehaviour {
         //we will now create the Close button.
         if (GUI.Button(new Rect(20, 10, 80, 20), "Close"))
         {
+            f_scroll = 0;
             //need to find the script and tell it to button press.
             GameObject.Find("LE_SCRIPTS").GetComponent<Mouse_Interaction_Script>().Button_Handler.Menu_Enemy_Clicked();
         }

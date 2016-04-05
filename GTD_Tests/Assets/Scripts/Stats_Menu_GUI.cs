@@ -9,6 +9,8 @@ public class Stats_Menu_GUI : MonoBehaviour
     string temp_String_01 = "";
     string temp_String_02 = "";
     string Temp_Value = "";
+
+    bool b_Startup_Config = true;
     //The tags used in the game.
     Assets.Scripts.Tag_Keeper G_Tags = new Assets.Scripts.Tag_Keeper();
     //this is the up/down for scrolling.
@@ -61,8 +63,8 @@ public class Stats_Menu_GUI : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        f_scroll += Input.GetAxis("Mouse ScrollWheel") * 80;
-        Ally_Sprite_Table.transform.Translate((Vector3.up * Input.GetAxis("Mouse ScrollWheel") * 2));
+            f_scroll += Input.GetAxis("Mouse ScrollWheel") * 80;
+            Ally_Sprite_Table.transform.Translate((Vector3.up * Input.GetAxis("Mouse ScrollWheel") * 2));
     }
 
     void Size_Change_Menu()
@@ -462,6 +464,14 @@ public class Stats_Menu_GUI : MonoBehaviour
 
     void Stats_Menu_Enabled()
     {
+
+        if (b_Startup_Config)
+        {
+            b_Startup_Config = false;
+            f_scroll = 0;
+
+        }
+
         int x_Amount = Screen.width / 2;
         float y_Amount = 10 + f_scroll;
         int i_Temp_Height = 25;
@@ -469,6 +479,7 @@ public class Stats_Menu_GUI : MonoBehaviour
         //Close Button.
         if (GUI.Button(new Rect(20, 20, 120, 20), "Close"))
         {
+            b_Startup_Config = true;
             b_Stats_Menu_Enabled = false;
             //set the collider to add the tag.
             GameObject Temp = new GameObject();
