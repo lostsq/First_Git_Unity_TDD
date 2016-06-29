@@ -36,6 +36,7 @@ namespace Assets.Scripts
             Button_Remove_Decoration = "Btn_Remove_Deco",
             Button_Enemy_Sprite = "Btn_Enemy_Sprite",
             Button_Ally_Sprite = "Btn_Ally_Sprite",
+            Button_Gem_Sprite = "Btn_Gem_Sprite",
             Tag_Decoration = "Deco",
             Tag_Field_Decoration = "Drag_Field_Deco",
             Tag_Path_Maker_Field_Move = "Drag_Spot_Field";

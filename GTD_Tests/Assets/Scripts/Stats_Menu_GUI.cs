@@ -56,7 +56,8 @@ public class Stats_Menu_GUI : MonoBehaviour
     {
         //get the stats thing we are working with to get the enemies.
         Stats = GameObject.Find("LE_SCRIPTS").GetComponent<LE_Stats_Controller>();
-        Ally_Sprite_Table = GameObject.Find("LE_Allies_Background");
+        //set up using the gem holder.
+        Ally_Sprite_Table = GameObject.Find("LE_Gem_Holder_Background");
 
     }
 
@@ -429,34 +430,48 @@ public class Stats_Menu_GUI : MonoBehaviour
             float X_Start = Screen.width / 2 - ((X_Size * 3) / 2);
 
 
-        //NAME
-        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Name");
-        GUI.Box(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].s_Name);
-        X_Start += X_Size;
-        //LOCKED
-        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Locked");
-        if (GUI.Button(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].b_Locked.ToString()))
-        {
-            if (Stats.Gem_Lock_List[i].b_Locked)
+            //NAME
+            GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Name");
+            GUI.Box(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].s_Name);
+            X_Start += X_Size;
+            //Tower LOCKED
+            GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Tower");
+            if (GUI.Button(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].b_Tower_Gem.ToString()))
             {
-                Stats.Gem_Lock_List[i].b_Locked = false;
+                if (Stats.Gem_Lock_List[i].b_Tower_Gem)
+                {
+                    Stats.Gem_Lock_List[i].b_Tower_Gem = false;
+                }
+                else
+                {
+                    Stats.Gem_Lock_List[i].b_Tower_Gem = true;
+                }
             }
-            else
+            X_Start += X_Size;
+            //COST
+            GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Cost");
+            string Temp_Value_Gem_Cost = Stats.Gem_Lock_List[i].Cost.ToString();
+            Temp_Value_Gem_Cost = GUI.TextField(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Temp_Value_Gem_Cost, 5);
+            int.TryParse(Temp_Value_Gem_Cost, out Stats.Gem_Lock_List[i].Cost);
+
+            X_Start += X_Size;
+
+            GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Enemy");
+            if (GUI.Button(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Stats.Gem_Lock_List[i].b_Enemy_Gem.ToString()))
             {
-                Stats.Gem_Lock_List[i].b_Locked = true;
+                if (Stats.Gem_Lock_List[i].b_Enemy_Gem)
+                {
+                    Stats.Gem_Lock_List[i].b_Enemy_Gem = false;
+                }
+                else
+                {
+                    Stats.Gem_Lock_List[i].b_Enemy_Gem = true;
+                }
             }
+
+            Ty += i_Size_Height_Amount + 5;
+
         }
-        X_Start += X_Size;
-        //COST
-        GUI.Box(new Rect(X_Start, Ty, X_Size, i_Size_Height_Amount / 2), "Cost");
-        string Temp_Value_Gem_Cost = Stats.Gem_Lock_List[i].Cost.ToString();
-        Temp_Value_Gem_Cost = GUI.TextField(new Rect(X_Start, Ty + i_Size_Height_Amount / 2, X_Size, i_Size_Height_Amount / 2), Temp_Value_Gem_Cost, 5);
-        int.TryParse(Temp_Value_Gem_Cost, out Stats.Gem_Lock_List[i].Cost);
-
-
-        Ty += i_Size_Height_Amount + 5;
-
-    }
 
 
 }
@@ -569,7 +584,7 @@ public class Stats_Menu_GUI : MonoBehaviour
         y_Amount += i_Temp_Height;
 
         //Locked Allies.
-        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Unlocked Allies"))
+        if (GUI.Button(new Rect(x_Amount, y_Amount, 120, i_Temp_Height), "Gem Locks"))
         {
             //disable the menu and enable the size menu.
             b_Stats_Menu_Enabled = false;

@@ -28,6 +28,7 @@ TagManager:
   - Btn_Remove_Deco
   - Btn_Enemy_Sprite
   - Btn_Ally_Sprite
+  - Btn_Gem_Sprite
   layers:
   - Default
   - TransparentFX

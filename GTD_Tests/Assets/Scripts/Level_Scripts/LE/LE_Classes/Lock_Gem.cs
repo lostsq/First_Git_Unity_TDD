@@ -11,15 +11,16 @@ namespace Assets.Scripts.Level_Scripts.LE.LE_Classes
     {
         //the name of the gem.
         public string s_Name;
-        //is the gem locked or not.
-        public bool b_Locked;
+        //Tower Gem?
+        public bool b_Tower_Gem = false;
+        //is this gem an enemy gem.
+        public bool b_Enemy_Gem = true;
         //how much does it cost to purchase this gem.
         public int Cost;
 
-        public Lock_Gem(string Passed_Name, bool Passed_Lock, int Passed_Cost)
+        public Lock_Gem(string Passed_Name, int Passed_Cost)
         {
             s_Name = Passed_Name;
-            b_Locked = Passed_Lock;
             Cost = Passed_Cost;
         }
 

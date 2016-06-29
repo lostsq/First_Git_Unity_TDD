@@ -42,18 +42,14 @@ public class LE_Stats_Controller : MonoBehaviour {
     //This is manually changed when gems are added/removed from the game as a whole.
     void Setup_Gem_Lock_List()
     {
-        //Right now since the gem list is not finalized will just do like 2 or 3 temp ones.
-
-        //RUBY
-        Lock_Gem Ruby = new Lock_Gem("Ruby", false, 100);
-        Gem_Lock_List.Add(Ruby);
-        //TOPAZ
-        Lock_Gem Topaz = new Lock_Gem("Topaz", false, 140);
-        Gem_Lock_List.Add(Topaz);
-        //OPAL
-        Lock_Gem Opal = new Lock_Gem("Opal", false, 180);
-        Gem_Lock_List.Add(Opal);
-
+        //we go through all the gems in the holder in the game and set them all with a default price.
+        GameObject Parent = GameObject.Find("LE_Gem_Holder_Background");
+        //go through all the children.
+        for (int i = 0; i < Parent.transform.childCount; i++)
+        {
+            //add the new gem, and set the cost to jude palceholder value.
+            Gem_Lock_List.Add(new Lock_Gem(Parent.transform.GetChild(i).name, i * 100 + 100));           
+        }
     }
 
 
@@ -737,7 +733,7 @@ public class LE_Stats_Controller : MonoBehaviour {
                     //unlocked allies
                     for (int i = 0; i < Gem_Lock_List.Count; i++)
                     {
-                        Write_This = "Lock Gem(" + Gem_Lock_List[i].s_Name + "," + Gem_Lock_List[i].b_Locked + "," + Gem_Lock_List[i].Cost;
+                        Write_This = "Lock Gem(" + Gem_Lock_List[i].s_Name + "," + Gem_Lock_List[i].b_Tower_Gem + "," + Gem_Lock_List[i].Cost + "," + Gem_Lock_List[i].b_Enemy_Gem;
                         file.WriteLine(Write_This);
                     }
                     //Allies
@@ -915,7 +911,25 @@ public class LE_Stats_Controller : MonoBehaviour {
                             string t_Name = Make_Split.Split(',')[0];
                             bool t_Lock = bool.Parse(Cur_Line.Split(',')[1]);
                             int t_Cost = int.Parse(Cur_Line.Split(',')[2]);
-                            Temp_Gem_Lock_List.Add(new Lock_Gem(t_Name, t_Lock, t_Cost));
+                            bool e_Lock = bool.Parse(Cur_Line.Split(',')[3]);
+
+                            bool b_Gem_Was_Found = false;
+
+                            //find/setup the locked gems.
+                            for (int i = 0; i < Gem_Lock_List.Count; i++)
+                            {
+                                if (Gem_Lock_List[i].s_Name == t_Name)
+                                {
+                                    Gem_Lock_List[i].b_Tower_Gem = t_Lock;
+                                    Gem_Lock_List[i].b_Enemy_Gem = e_Lock;
+                                    Gem_Lock_List[i].Cost = t_Cost;
+                                }
+                            }
+                            if (!b_Gem_Was_Found)
+                            {
+                                Debug.Log("No Locked Gem Found For " + t_Name);
+                            }
+
                         }
 
                         //TOWERS
@@ -933,7 +947,7 @@ public class LE_Stats_Controller : MonoBehaviour {
                             int t_Points = int.Parse(Make_Split.Split(',')[5]);
 
                             //tricky part. need to get the sprite that matches the name.
-                            GameObject Parent = GameObject.Find("All_Allies");
+                            GameObject Parent = GameObject.Find("LE_Gem_Holder_Background");
                             bool sprite_found = false;
                             //go through all the children.
                             for (int i = 0; i < Parent.transform.childCount; i++)
@@ -973,7 +987,7 @@ public class LE_Stats_Controller : MonoBehaviour {
 
 
                             //tricky part. need to get the sprite that matches the name.
-                            GameObject Parent = GameObject.Find("LE_Enemies_Background");
+                            GameObject Parent = GameObject.Find("LE_Gem_Holder_Background");
                             bool sprite_found = false;
                             //go through all the children.
                             for (int i = 0; i < Parent.transform.childCount; i++)

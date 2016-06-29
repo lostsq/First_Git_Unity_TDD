@@ -9,7 +9,7 @@ public class Enemies_GUI : MonoBehaviour {
     public bool b_StartingGUI = false;
     public bool b_Enabled = false;
     bool b_Add_Enemy_Enabled = false;
-    bool b_Show_Enemy_Sprites = false;
+    public bool b_Show_Enemy_Sprites = false;
     public bool b_Close_Enemy_Sprites = false;
     int i_Enemy_Edit_Number = -1;
     Enemy_Template Temp_Enemy = null;

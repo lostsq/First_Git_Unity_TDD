@@ -85,25 +85,31 @@ namespace Assets.Scripts.Level_Scripts.Handlers
                 //move  pass.
                 Cur.Move_Path('r');
             }
-            else if (s_tag == G_Tags.Button_Enemy_Sprite)
+            //All gems for selecting for both enemies and allies.
+            else if (s_tag == G_Tags.Button_Gem_Sprite)
             {
-                //get the enemies GUI.
-                Enemies_GUI Cur = GameObject.Find(G_Tags.Name_Enemies_Menu).GetComponent<Enemies_GUI>();
-                //set the temp sprite.
-                Cur.Edit_GameObject_Temp = Passed_Button.gameObject;
-                //close the menu.
-                Cur.b_Close_Enemy_Sprites = true;
-            }
-            else if (s_tag == G_Tags.Button_Ally_Sprite)
-            {
-                //get the allies GUI
-                Stats_Menu_GUI Cur = GameObject.Find(G_Tags.Name_Stats_Menu).GetComponent<Stats_Menu_GUI>();
-                //set the temp sprite.
-                Cur.Temp_Sprite = Passed_Button.gameObject.GetComponent<SpriteRenderer>().sprite;
-                //set the name.
-                Cur.Temp_Name = Passed_Button.name;
-                //set the close to true.
-                Cur.b_Finished_Picking = true;
+                //check the enemies then the allies to find out what is open.
+                Enemies_GUI Cur_Ene = GameObject.Find(G_Tags.Name_Enemies_Menu).GetComponent<Enemies_GUI>();
+
+                //check if enemy.
+                if (Cur_Ene.b_Show_Enemy_Sprites)
+                {
+                    Cur_Ene.Edit_GameObject_Temp = Passed_Button.gameObject;
+                    //close the menu.
+                    Cur_Ene.b_Close_Enemy_Sprites = true;
+                }
+                //if not it's a tower.
+                else
+                {
+                    //get the allies GUI
+                    Stats_Menu_GUI Cur = GameObject.Find(G_Tags.Name_Stats_Menu).GetComponent<Stats_Menu_GUI>();
+                    //set the temp sprite.
+                    Cur.Temp_Sprite = Passed_Button.gameObject.GetComponent<SpriteRenderer>().sprite;
+                    //set the name.
+                    Cur.Temp_Name = Passed_Button.name;
+                    //set the close to true.
+                    Cur.b_Finished_Picking = true;
+                }
             }
             else
             {
